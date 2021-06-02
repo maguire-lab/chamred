@@ -10,7 +10,7 @@ df = pd.read_csv(unsorted_file, sep="\t", names = headers)
 # %%
 df = df.assign(query=lambda df: df['query'].str.split("_").str[0])
 # %%
-
+# sort by query and get best match using fident and alnlen
 df = (df
     .sort_values(
         by=['query', 'fident', 'alnlen'],
@@ -19,7 +19,7 @@ df = (df
 )
 # remove duplicates
 df = df.drop_duplicates(subset=['query'])
-# resort based on query
+# now resort based on query
 df = (df
     .sort_values(
         by=['query'],

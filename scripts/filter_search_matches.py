@@ -1,9 +1,7 @@
 # %%
 import pandas as pd
-import collections
 # %%
 resfinder_vs_card_rbhs = list(pd.read_csv("../results/mmseqs_resfinder_vs_card.rbh.sorted.tsv", sep="\t")['query'])
-print([item for item, count in collections.Counter(resfinder_vs_card_rbhs).items() if count > 1])
 # %%
 # get matches from search that do not have rbhs and name them non-rbhs 
 headers = ['query', 'target', 'fident', 'alnlen', 'mismatch', 'gapopen', 'qstart', 'qend', 'tstart', 'tend', 'evalue', 'bits']
