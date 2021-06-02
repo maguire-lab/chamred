@@ -3,9 +3,9 @@
 👆This is a placeholder whilst searching for a better name (the joke may be lost on non-Brits)  
 
 Other potential names include
-* AMRinAMR
+* AMRinAMR  
   ![AMRinAMR](images/AMRinAMR.png)
-* CharmeDb
+* CharmeDb  
   ![CharmeDb](images/CharmeDb.png)
 
 
