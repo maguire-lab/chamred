@@ -96,9 +96,9 @@ def print_edge_info(node, graph):
             edge_data = hit_databases[database]['hits'][accession]['edge_data']
             accession_data = hit_databases[database]['hits'][accession]['accession_data']
             if edge_data['type'] == 'RBH':
-                rprint(f"    :left_right_arrow: [{colour}]{accession} ({target_node_data['name']})[/{colour}]")
+                rprint(f"    :left_right_arrow: [{colour}]{accession} ({accession_data['name']})[/{colour}]")
             else:
-                rprint(f"      :right_arrow: [{colour}]{accession} ({target_node_data['name']})[/{colour}]")
+                rprint(f"      :right_arrow: [{colour}]{accession} ({accession_data['name']})[/{colour}]")
             for key in edge_data:
                 rprint(f"        :link: [white]{key}:[/white] [grey66]{edge_data[key]}[/grey66]")
             other_data = {key:accession_data[key] for key in accession_data if key != 'database' and key != 'name'}

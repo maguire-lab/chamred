@@ -18,3 +18,8 @@ graph_functions.print_edge_info('resfinder:blaACC-7', G)
 graph_functions.print_edge_info('card:ARO:3001816', G)
 
 graph_functions.print_edge_info('resfinder:aac(3)-IIIb', G)
+
+# SHV-24
+graph_functions.print_edge_info('ncbi:WP_063864670.1', G)
+# SHV-180
+graph_functions.print_edge_info('ncbi:WP_063864659.1', G)

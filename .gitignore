@@ -2,3 +2,4 @@ resfinder_db
 tmp
 card_db
 mmseqs_DBs
+*.pyc

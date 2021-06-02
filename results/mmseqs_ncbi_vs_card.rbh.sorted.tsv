@@ -1,4 +1,4 @@
-query	
+query	target	fident	alnlen	mismatch	gapopen	qstart	qend	tstart	tend	evalue	bits
 WP_000027050.1	ARO:3000979	1.0	286	0	0	1	286	1	286	5.379e-191	584
 WP_000027057.1	ARO:3000873	1.0	286	0	0	1	286	1	286	5.379e-191	584
 WP_000027060.1	ARO:3001044	1.0	286	0	0	1	286	1	286	5.379e-191	584
