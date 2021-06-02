@@ -30,7 +30,7 @@ for _, row in metadata_df.iterrows():
     name = row['allele']
     metadata[id] = {
         'name': name,
-        'subclass': row['subclass']
+        'phenotype': f"confers resistance to subclass {row['subclass']}"
     }
 
 out_path =  os.path.join(
