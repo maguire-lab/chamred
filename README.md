@@ -1,5 +1,5 @@
 # project mAMRite
-![mAMRite](images/mAMRite.png)
+![mAMRite](images/mAMRite.png)  
 👆This is a placeholder whilst searching for a better name (the joke may be lost on non-Brits)  
 
 Other potential names include
