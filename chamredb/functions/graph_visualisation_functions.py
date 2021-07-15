@@ -76,7 +76,6 @@ def write_multiple_node_info(id_data,graph,out_filepath):
                 if source_id not in missing_ids[source_database]:
                     missing_ids[source_database][source_id] = 0
                 missing_ids[source_database][source_id] += 1
-                print(f"WARNING: Could not find a match for {source_id} in the {source_database} database")
                 continue
             # get the name
             name = source_node['name']
@@ -111,7 +110,21 @@ def write_multiple_node_info(id_data,graph,out_filepath):
                 out.write(f'{source_file}\t{source_id}\t{source_database}\t{name}\t{metadata_string}\t{target_node_info_string}\n')
             else:
                 out.write(f'{source_id}\t{source_database}\t{name}\t{metadata_string}\t{target_node_info_string}\n')
-
+        # print message about missing ids
+        if multiple_samples:
+            number_of_samples = len(set([ id_info['file'] for id_info in id_data]))
+            print(number_of_samples)
+        if len(missing_ids) > 0:
+            print(f"WARNING: Could not find a matches for some ids")
+            for database in missing_ids:
+                print(f"Missing Ids in {database}:")
+                for missing_id in missing_ids[database]:
+                    num_missing_ids = missing_ids[database][missing_id]
+                    if multiple_samples:
+                        proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}%)'
+                    else:
+                        proportion = ""
+                    print(f"\t{missing_id}: {num_missing_ids}{proportion}")
     
 
 
