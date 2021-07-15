@@ -1,0 +1,30 @@
+from  functions import graph_functions
+from  functions import hit_functions
+
+import os
+import json
+import networkx as nx
+from networkx.readwrite import json_graph
+import itertools
+
+G = nx.DiGraph()
+
+for permutation in itertools.permutations(['card', 'ncbi', 'resfinder'], r=2):
+    sourceDB = permutation[0]
+    targetDB = permutation[1]
+    hit_functions.filter_and_sort_rbhs(sourceDB,targetDB)
+    hit_functions.filter_and_sort_non_rbhs(sourceDB,targetDB)
+    graph_functions.add_rbh_hits_to_graph(sourceDB,targetDB,G)
+    graph_functions.add_search_hits_to_graph(sourceDB,targetDB,G)
+
+
+out_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "data", "graph.json"
+            )
+with open(out_path, "w") as out_file:
+    out_file.write(
+        json.dumps(json_graph.node_link_data(G), sort_keys=True, indent=2)
+    )
+
+

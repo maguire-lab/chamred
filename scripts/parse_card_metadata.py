@@ -1,6 +1,8 @@
 import pronto
 import json
 import os
+
+from pronto import relationship
 metadata_file =  os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "..", "db_metadata",
@@ -20,17 +22,19 @@ for term in o.terms():
     for relationship in relationships:
         if relationship.name.startswith('confers_resistance'):
             antibiotics = ','.join([term.name for term in relationships[relationship]])
-            metadata[term.id]["phenotype"] = f"{relationship.name.replace('_', ' ')}: {antibiotics}"
+            if "phenotype" not in metadata[term.id]:
+                metadata[term.id]["phenotype"] = []
+            metadata[term.id]["phenotype"].append(f"{relationship.name.replace('_', ' ')}: {antibiotics}")
 
 # second pass to pull out extra confers resistance from is_a relationships
 for id in metadata:
     if "is_a" in metadata[id]:
         is_a_ARO_id = ":".join(metadata[id]["is_a"].split(":")[0:2])
         if "phenotype" in metadata[is_a_ARO_id]:
-            if "phenotype" in metadata[id]:
-                metadata[id]["additional_phenotype"] = metadata[is_a_ARO_id]["phenotype"]
-            else:
-                metadata[id]["phenotype"] = metadata[is_a_ARO_id]["phenotype"]
+            if "phenotype" not in metadata[id]:
+                metadata[id]["phenotype"] = []
+            metadata[id]["phenotype"].append(metadata[is_a_ARO_id]["phenotype"])
+
 out_path =  os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "..", "db_metadata",

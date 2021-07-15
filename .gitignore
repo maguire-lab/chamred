@@ -3,3 +3,8 @@ tmp
 card_db
 mmseqs_DBs
 *.pyc
+.vscode
+dist
+build
+*.egg-info
+.eggs
