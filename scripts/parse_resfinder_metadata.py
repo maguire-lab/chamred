@@ -15,7 +15,7 @@ for _, row in metadata_df.iterrows():
     name = row['Gene_accession no.'].split("_")[0]
     metadata[name] = {
         'name': name,
-        'phenotype': row['Phenotype']
+        'phenotype': [f"confers resistance to {row['Phenotype']}"]
     }
 
 out_path =  os.path.join(

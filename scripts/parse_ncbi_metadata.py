@@ -15,7 +15,7 @@ metadata_df = metadata_df.query('scope == "core" and type == "AMR" and subtype =
 
 metadata_df = metadata_df.sort_values(by=['gene_family', 'allele'])
 
-metadata_df = metadata_df.filter(['allele', 'gene_family', 'subclass', 'refseq_protein_accession'])
+metadata_df = metadata_df.filter(['allele', 'gene_family', 'subclass', 'refseq_protein_accession', 'refseq_nucleotide_accession'])
 
 # combine allele and gene family and drop duplicates
 metadata_df = (metadata_df
@@ -30,6 +30,7 @@ for _, row in metadata_df.iterrows():
     name = row['allele']
     metadata[id] = {
         'name': name,
+        'alternative_id': row['refseq_nucleotide_accession'],
         'phenotype': f"confers resistance to subclass {row['subclass']}"
     }
 
