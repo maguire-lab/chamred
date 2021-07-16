@@ -1,1 +1,3 @@
 include chamredb/data/graph.json
+include chamredb/data/db_metadata/*.json
+include chamredb/data/db_fastas/*.fasta

@@ -2,6 +2,7 @@ import pandas as pd
 import networkx as nx
 import os
 import json
+import itertools
 
 def add_rbh_hits_to_graph(sourceDB,targetDB, graph, debug = False):
 
@@ -75,7 +76,11 @@ def get_graph_node(identifier,database,graph):
     else:
         for node_id, node_data in graph.nodes(data=True):
             if ((
-                'alternative_id' in node_data and node_data['alternative_id'] == identifier
+                    'alternative_id' in node_data
+                    and identifier in node_data['alternative_id'].values()
+                ) or (
+                    'duplicate_allele_ids' in node_data
+                    and identifier in itertools.chain(*node_data['duplicate_allele_ids'].values())
                 )
                 or
                 node_data['name'] == identifier
@@ -87,7 +92,7 @@ def get_graph_node(identifier,database,graph):
 def __load_metadata(sourceDB,targetDB):
     sourceDB_metadata_path = os.path.join(
                     os.path.dirname(os.path.abspath(__file__)),
-                    "..", "..", "db_metadata",
+                    "..", "data", "db_metadata",
                     f"{sourceDB}.metadata.json"
                 )
     with open(sourceDB_metadata_path) as sourceDB_metadata_file:
@@ -95,7 +100,7 @@ def __load_metadata(sourceDB,targetDB):
 
     targetDB_metadata_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
-                "..", "..", "db_metadata",
+                "..", "data", "db_metadata",
                 f"{targetDB}.metadata.json"
             )
     with open(targetDB_metadata_path) as targetDB_metadata_file:
