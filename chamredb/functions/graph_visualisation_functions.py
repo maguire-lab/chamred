@@ -1,4 +1,8 @@
 import sys
+import json
+import os
+import itertools
+from tqdm import tqdm
 from rich import print as rprint
 from chamredb.functions import graph_functions
 
@@ -65,7 +69,9 @@ def write_multiple_node_info(id_data,graph,out_filepath):
         header = __multiple_ids_header(header_databases, target_node_field_titles, multiple_samples)
         out.write(f'{header}\n')
         missing_ids = {}
-        for id_info in id_data:
+        progress_bar = tqdm(id_data)
+        for id_info in progress_bar:
+            progress_bar.set_description(f'Processing {id_info["id"]}')
             source_id = id_info['id']
             source_database = id_info['database']
             # get a source node and it's id based on the database and an id (which could be a name)
@@ -110,23 +116,8 @@ def write_multiple_node_info(id_data,graph,out_filepath):
                 out.write(f'{source_file}\t{source_id}\t{source_database}\t{name}\t{metadata_string}\t{target_node_info_string}\n')
             else:
                 out.write(f'{source_id}\t{source_database}\t{name}\t{metadata_string}\t{target_node_info_string}\n')
-        # print message about missing ids
-        if multiple_samples:
-            number_of_samples = len(set([ id_info['file'] for id_info in id_data]))
-            print(number_of_samples)
-        if len(missing_ids) > 0:
-            print(f"WARNING: Could not find a matches for some ids")
-            for database in missing_ids:
-                print(f"Missing Ids in {database}:")
-                for missing_id in missing_ids[database]:
-                    num_missing_ids = missing_ids[database][missing_id]
-                    if multiple_samples:
-                        proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}%)'
-                    else:
-                        proportion = ""
-                    print(f"\t{missing_id}: {num_missing_ids}{proportion}")
-    
-
+        # print missing ids message
+        __missing_ids_message(missing_ids, multiple_samples, id_data)
 
 
 # private methods
@@ -135,8 +126,9 @@ def __node_metadata(node):
     return metadata for a node as a list
     """
     metadata = []
+    non_metadata_keys = ['name', 'database', 'alternative_id', 'duplicate_allele_ids']
     for key in node:
-        if key != 'name' and key != 'database' and key != 'alternative_id':
+        if key not in non_metadata_keys :
             metadata.append(f'{key}:{node[key]}')
     return(metadata)
 
@@ -196,3 +188,65 @@ def __multiple_ids_header(databases, field_titles, multiple_samples):
     header = f"{sample_header_string}\t{database_header_title_string}\n"
     return(header)
 
+def __missing_ids_message(missing_ids, multiple_samples, id_data):
+    # read in database metadata
+    metadata = {}
+    databases = missing_ids.keys()
+    for database in databases:
+        metadata[database] = __get_metadata(database)
+    # print message about missing ids
+    if multiple_samples:
+        number_of_samples = len(set([ id_info['file'] for id_info in id_data]))
+    if len(missing_ids) > 0:
+        print(f"WARNING: Could not find a matches for some ids")
+        for database in missing_ids:
+            print(f"Missing Ids in {database}:")
+            for missing_id in missing_ids[database]:
+                num_missing_ids = missing_ids[database][missing_id]
+                if multiple_samples:
+                    proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}%)'
+                else:
+                    proportion = ""
+                database_name = __get_name_for_id(missing_id, metadata[database])
+                if database_name:
+                    database_name_string = f' ({database_name})'
+                else:
+                    database_name_string = ''
+                print(f"\t{missing_id}{database_name_string}: {num_missing_ids}{proportion}")
+
+def __get_metadata(database):
+    """get metdata from json file for specified database
+
+    Args:
+        database (string): the name of the AMR database
+    
+    Returns:
+        metadata (json): The consistently encoded database metadata in JSON format
+    """
+    metadata_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'db_metadata', f'{database}.metadata.json')
+    with open(metadata_file) as json_file:
+        metadata = json.load(json_file)
+    return(metadata)
+
+def __get_name_for_id(id_to_match, metadata):
+    """get name of AMR determinant from metadata based on id or alternative id
+
+    Args:
+        id_to_match (string): id or alternative id of AMR determinant to find in database
+        metadata (json): The consistently encoded database metadata in JSON format
+    
+    Returns:
+        name(string) or None: Name of AMR determinant or None if not found
+    """
+    for database_id in metadata:
+        if id_to_match == database_id:
+            return(metadata[database_id]['name'])
+        elif(
+                'alternative_id' in metadata[database_id]
+                    and id_to_match in metadata[database_id]['alternative_id'].values()
+            ) or (
+                    'duplicate_allele_ids' in metadata[database_id]
+                    and id_to_match in itertools.chain(*metadata[database_id]['duplicate_allele_ids'].values())
+            ):
+            return(metadata[database_id]['name'])
+    return(None)
