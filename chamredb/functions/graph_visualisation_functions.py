@@ -71,7 +71,7 @@ def write_multiple_node_info(id_data,graph,out_filepath):
         missing_ids = {}
         progress_bar = tqdm(id_data)
         for id_info in progress_bar:
-            progress_bar.set_description(f'Processing {id_info["id"]}')
+            progress_bar.set_description(f'Find metadata for {id_info["id"]}')
             source_id = id_info['id']
             source_database = id_info['database']
             # get a source node and it's id based on the database and an id (which could be a name)

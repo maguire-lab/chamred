@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import textwrap
 from chamredb.query_graph import query_graph_single_id, query_graph_multiple_ids
 from chamredb.functions.utility_functions import parse_id_file
 from chamredb.functions.utility_functions import parse_hamronization_json_file
@@ -64,10 +65,27 @@ def parse_arguments():
     return(parser.parse_args())
 
 
+def print_ascii_header():
+    header = textwrap.dedent(
+    """
+   ====================================================
+         _              __  __ _____      _____  _     
+        | |       /\   |  \/  |  __ \    |  __ \| |    
+     ___| |__    /  \  | \  / | |__) |___| |  | | |__  
+    / __| '_ \  / /\ \ | |\/| |  _  // _ \ |  | | '_ \ 
+   | (__| | | |/ ____ \| |  | | | \ \  __/ |__| | |_) |
+    \___|_| |_/_/    \_\_|  |_|_|  \_\___|_____/|_.__/ 
+   ====================================================
+                                                        
+    """
+    )
+    print(header)
+
 def main():
     """The main function to parse the arguments and then direct the command as specified by the params
     """
     options = parse_arguments()
+    print_ascii_header()
     if options.command == 'query':
         if options.id:
             query_graph_single_id(options.id, options.database)
@@ -78,6 +96,7 @@ def main():
         elif options.hamronization_json_file:
             id_data = parse_hamronization_json_file(options.hamronization_json_file)
             query_graph_multiple_ids(id_data, options.outfile_path)
+            print(f'\nResults available at {options.outfile_path}')
 
 if __name__ == "__main__":
     main()
