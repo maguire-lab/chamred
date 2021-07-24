@@ -2,22 +2,34 @@ import sys
 import json
 import os
 import itertools
-from tqdm import tqdm
-from rich import print as rprint
+from rich.progress import track
 from chamredb.functions import graph_functions
 
-def print_node_info(identifier, database, graph):
+def single_node_info_text(identifier, database, graph, coverage_threshold = 0.9, identity_threshold = 0.9):
+    """
+    single_node_info_text Given an id and its corresponding database find matches and write the match metadata to a file
+
+    Args:
+        identifier (string): The identifier in the database
+        database (string): One of ncbi,card or resfinder
+        graph (networkx DiGraph): A graph of the AMR database matches
+        coverage_threshold (float, optional): The covergae value below which a match will not be reported. Defaults to 0.9.
+        identity_threshold (float, optional): The identity value below which a match will not be reported. Defaults to 0.9.
+
+    Returns:
+        [string]: A string formatted for the printing using the rich library
+    """
     colours = ["blue_violet", "yellow1", "orange_red1","chartreuse1" ]
     source_node_id, source_node_data = graph_functions.get_graph_node(identifier, database, graph)
     if not source_node_id:
         print(f"Could not find a match for {identifier} in the {database} database")
         sys.exit(1)
 
-    rprint(f":dna: [cyan bold]{identifier}[/cyan bold] [magenta bold]({source_node_data['name']})[/magenta bold]")
+    info_text = f"\n:dna: [cyan bold]{identifier}[/cyan bold] [magenta bold]({source_node_data['name']})[/magenta bold]\n"
 
-    for key in source_node_data:
-        if key != 'database' and key != 'name':
-            rprint(f"[bright_cyan]:page_facing_up: {key}: {source_node_data[key]}[/bright_cyan]")
+    source_node_metadata = __node_metadata(source_node_data)
+    for key in source_node_metadata:
+        info_text += f"[bright_cyan]:page_facing_up: {key}: {source_node_metadata[key]}[/bright_cyan]\n"
     
     node_targets = __node_target_info(graph,source_node_id)
     database_colours = {}
@@ -27,29 +39,41 @@ def print_node_info(identifier, database, graph):
     # print edge (hit) data
     for database in node_targets:
         colour = database_colours[database]
-        rprint(f"  :file_cabinet: [{colour}]{database}")
+        info_text += f"  :file_cabinet: [{colour}]{database}[/{colour}]\n"
         # return just first match
         target_ids = list(node_targets[database])
         target_id = target_ids[0]
         edge_data = node_targets[database][target_id]['edge_data']
+        if edge_data['coverage'] < coverage_threshold or edge_data['identity'] < identity_threshold:
+            info_text += f"    No significant matches with coverage >= {coverage_threshold} and identity >= {identity_threshold}\n"
+            continue
         target_node_data = node_targets[database][target_id]['node']
         if edge_data['type'] == 'RBH':
-            rprint(f"    :left_right_arrow: [{colour}]{target_id} ({target_node_data['name']})[/{colour}]")
+            info_text += f"    :left_right_arrow: [{colour}]{target_id} ({target_node_data['name']})[/{colour}]\n"
         else:
-            rprint(f"      :right_arrow: [{colour}]{target_id} ({target_node_data['name']})[/{colour}]")
+            info_text += f"      :right_arrow: [{colour}]{target_id} ({target_node_data['name']})[/{colour}]\n"
         for key in edge_data:
-            rprint(f"        :link: [white]{key}:[/white] [grey66]{edge_data[key]}[/grey66]")
+            info_text += f"        :link: [white]{key}:[/white] [grey66]{edge_data[key]}[/grey66]\n"
         other_data = {key:target_node_data[key] for key in target_node_data if key != 'database' and key != 'name'}
         for key in other_data:
-            rprint(f"        :page_facing_up: [white]{key}:[/white] [grey66]{other_data[key]}[/grey66]")
-    print("="*80)
-    print()
+            info_text += f"        :page_facing_up: [white]{key}:[/white] [grey66]{other_data[key]}[/grey66]\n"
+    info_text += f"{'='*80}\n\n"
+    return info_text
 
 
-def write_multiple_node_info(id_data,graph,out_filepath):
+def write_multiple_node_info(id_data,graph,out_filepath,coverage_threshold=0.9,identity_threshold=0.9):
     """
-    id_data: a list of dicts with keys id, database and optionally file
+    write_multiple_node_info Given a list of dict objects containing ids and their corresponding databases find
+    matches and write the match metadata to a file
+
+    Args:
+        id_data (list):  id_data: a list of dicts with keys id, database and optionally file
+        graph (networkx DIGraph): A graph of the AMR database matches
+        out_filepath (string): path to the outfile that will contain the id matches
+        coverage_threshold (float, optional): The covergae value below which a match will not be reported. Defaults to 0.9.
+        identity_threshold (float, optional): The identity value below which a match will not be reported. Defaults to 0.9.
     """
+
     all_databases = set([graph.nodes[node_name]['database'] for node_name in graph.nodes])
     id_databases = set([ id_info['database'] for id_info in id_data])
     # if only one database in ids_and_databases then the header databases should not include this database
@@ -69,9 +93,7 @@ def write_multiple_node_info(id_data,graph,out_filepath):
         header = __multiple_ids_header(header_databases, target_node_field_titles, multiple_samples)
         out.write(f'{header}\n')
         missing_ids = {}
-        progress_bar = tqdm(id_data)
-        for id_info in progress_bar:
-            progress_bar.set_description(f'Find metadata for {id_info["id"]}')
+        for id_info in track(id_data, description=f'Finding metadata'):
             source_id = id_info['id']
             source_database = id_info['database']
             # get a source node and it's id based on the database and an id (which could be a name)
@@ -86,21 +108,31 @@ def write_multiple_node_info(id_data,graph,out_filepath):
             # get the name
             name = source_node['name']
             # make the metadata from the source node
-            metadata_string = ','.join(__node_metadata(source_node))
+            metadata_string = ', '.join([f'{key}: {value}' for key, value in __node_metadata(source_node).items()])
             # find all target nodes for the source node
             source_node_target_info = __node_target_info(graph, source_node_id)
             # make a dict of items about the target nodes
             target_node_info = {}
             for target_database in source_node_target_info:
-                best_match = __best_target_node_match(source_node_target_info[target_database])
-                target_node_info[target_database] = {
-                    'id': best_match['id'],
-                    'name': best_match['node']['name'],
-                    'match_type': best_match['edge_data']['type'],
-                    'match_identity': best_match['edge_data']['identity'],
-                    'match_coverage': best_match['edge_data']['coverage'],
-                    'metadata': ','.join(__node_metadata(best_match['node']))
-                }
+                best_match = __best_target_node_match(source_node_target_info[target_database],coverage_threshold,identity_threshold)
+                if best_match:
+                    target_node_info[target_database] = {
+                        'id': best_match['id'],
+                        'name': best_match['node']['name'],
+                        'match_type': best_match['edge_data']['type'],
+                        'match_identity': best_match['edge_data']['identity'],
+                        'match_coverage': best_match['edge_data']['coverage'],
+                        'metadata': ', '.join([f'{key}: {value}' for key, value in __node_metadata(best_match['node']).items()])
+                    }
+                else:
+                    target_node_info[target_database] = {
+                        'id': '',
+                        'name': '',
+                        'match_type':'',
+                        'match_identity': '',
+                        'match_coverage': '',
+                        'metadata': ''
+                    }
             
             # write out target info
             target_node_info_list = []
@@ -123,14 +155,14 @@ def write_multiple_node_info(id_data,graph,out_filepath):
 # private methods
 def __node_metadata(node):
     """
-    return metadata for a node as a list
+    return metadata for a node as a dict
     """
-    metadata = []
+    metadata = {}
     non_metadata_keys = ['name', 'database', 'alternative_id', 'duplicate_allele_ids']
     for key in node:
         if key not in non_metadata_keys :
-            metadata.append(f'{key}:{node[key]}')
-    return(metadata)
+            metadata[key] = node[key]
+    return metadata
 
 def __node_target_info(graph,node_id):
     """
@@ -147,9 +179,9 @@ def __node_target_info(graph,node_id):
             'node': target_node,
             'edge_data': edge_data
         }
-    return(node_targets)
+    return node_targets
 
-def __best_target_node_match(node_targets):
+def __best_target_node_match(node_targets,coverage_threshold,identity_threshold):
     """
     Given a dict of target nodes (key is id) return best node based on identity and coverage
     """
@@ -159,20 +191,20 @@ def __best_target_node_match(node_targets):
     for target_node_id in node_targets:
         coverage = node_targets[target_node_id]['edge_data']['coverage']
         identity = node_targets[target_node_id]['edge_data']['identity']
-        if  coverage >= 0.9 and coverage > best_match_coverage:
-            if identity > best_match_identity:
+        if  coverage >= coverage_threshold and coverage > best_match_coverage:
+            if identity >= identity_threshold and identity > best_match_identity:
                 best_match = node_targets[target_node_id]
                 best_match['id'] = target_node_id
                 best_match_coverage = coverage
                 best_match_identity = identity
-    return(best_match)
+    return best_match
 
 def __edge_target_info(graph,edge):
     target_node = graph.nodes[edge[1]]
     edge_data = graph.get_edge_data(edge[0], edge[1])
     database = edge[1].split(":")[0]
     id = ''.join(edge[1].split(":")[1:])
-    return(database,id,target_node,edge_data)
+    return database,id,target_node,edge_data
 
 
 def __multiple_ids_header(databases, field_titles, multiple_samples):
@@ -186,7 +218,7 @@ def __multiple_ids_header(databases, field_titles, multiple_samples):
         sample_header_string = "id\tdatabase\tname\tmetadata"
     database_header_title_string = '\t'.join(database_header_titles)
     header = f"{sample_header_string}\t{database_header_title_string}\n"
-    return(header)
+    return header
 
 def __missing_ids_message(missing_ids, multiple_samples, id_data):
     # read in database metadata
@@ -204,7 +236,7 @@ def __missing_ids_message(missing_ids, multiple_samples, id_data):
             for missing_id in missing_ids[database]:
                 num_missing_ids = missing_ids[database][missing_id]
                 if multiple_samples:
-                    proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}%)'
+                    proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}% samples)'
                 else:
                     proportion = ""
                 database_name = __get_name_for_id(missing_id, metadata[database])
@@ -226,7 +258,7 @@ def __get_metadata(database):
     metadata_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'db_metadata', f'{database}.metadata.json')
     with open(metadata_file) as json_file:
         metadata = json.load(json_file)
-    return(metadata)
+    return metadata
 
 def __get_name_for_id(id_to_match, metadata):
     """get name of AMR determinant from metadata based on id or alternative id
@@ -240,7 +272,7 @@ def __get_name_for_id(id_to_match, metadata):
     """
     for database_id in metadata:
         if id_to_match == database_id:
-            return(metadata[database_id]['name'])
+            return metadata[database_id]['name']
         elif(
                 'alternative_id' in metadata[database_id]
                     and id_to_match in metadata[database_id]['alternative_id'].values()
@@ -248,5 +280,5 @@ def __get_name_for_id(id_to_match, metadata):
                     'duplicate_allele_ids' in metadata[database_id]
                     and id_to_match in itertools.chain(*metadata[database_id]['duplicate_allele_ids'].values())
             ):
-            return(metadata[database_id]['name'])
-    return(None)
+            return metadata[database_id]['name']
+    return None

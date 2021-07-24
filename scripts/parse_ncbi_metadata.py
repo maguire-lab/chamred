@@ -18,7 +18,7 @@ metadata_df = metadata_df.query('scope == "core" and subtype !="POINT"' )
 
 metadata_df = metadata_df.sort_values(by=['gene_family', 'allele'])
 
-metadata_df = metadata_df.filter(['allele', 'gene_family', 'subclass', 'refseq_protein_accession', 'refseq_nucleotide_accession'])
+metadata_df = metadata_df.filter(['product_name', 'allele', 'gene_family', 'subclass', 'refseq_protein_accession', 'refseq_nucleotide_accession'])
 
 # %%
 # combine allele and gene family and drop duplicates
@@ -32,7 +32,7 @@ metadata_df = (metadata_df
 metadata_deduplicated = metadata_df.drop_duplicates(subset=['allele'])
 
 # %%
-# aggregated metdata
+# aggregated metadata
 aggregated_refseq_protein_accessions = (
     metadata_df.groupby(['allele'])['refseq_protein_accession']
     .apply(list)
@@ -91,6 +91,7 @@ for _, row in metadata_deduplicated.iterrows():
             'protein_accessions': row['duplicated_refseq_protein_accessions'],
             'nucleotide_accessions': row['duplicated_refseq_nucleotide_accessions']
         },
+        'product': row['product_name'],
         'phenotype': f"confers resistance to subclass {row['subclass']}"
     }
 
