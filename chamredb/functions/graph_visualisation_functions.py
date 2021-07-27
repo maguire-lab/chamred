@@ -13,7 +13,7 @@ def single_node_info_text(identifier, database, graph, coverage_threshold = 0.9,
         identifier (string): The identifier in the database
         database (string): One of ncbi,card or resfinder
         graph (networkx DiGraph): A graph of the AMR database matches
-        coverage_threshold (float, optional): The covergae value below which a match will not be reported. Defaults to 0.9.
+        coverage_threshold (float, optional): The coverage value below which a match will not be reported. Defaults to 0.9.
         identity_threshold (float, optional): The identity value below which a match will not be reported. Defaults to 0.9.
 
     Returns:
@@ -73,7 +73,6 @@ def write_multiple_node_info(id_data,graph,out_filepath,coverage_threshold=0.9,i
         coverage_threshold (float, optional): The covergae value below which a match will not be reported. Defaults to 0.9.
         identity_threshold (float, optional): The identity value below which a match will not be reported. Defaults to 0.9.
     """
-
     all_databases = set([graph.nodes[node_name]['database'] for node_name in graph.nodes])
     id_databases = set([ id_info['database'] for id_info in id_data])
     # if only one database in ids_and_databases then the header databases should not include this database
@@ -91,7 +90,7 @@ def write_multiple_node_info(id_data,graph,out_filepath,coverage_threshold=0.9,i
     
     with open(out_filepath, 'w') as out:
         header = __multiple_ids_header(header_databases, target_node_field_titles, multiple_samples)
-        out.write(f'{header}\n')
+        out.write(f'{header}')
         missing_ids = {}
         for id_info in track(id_data, description=f'Finding metadata'):
             source_id = id_info['id']
@@ -236,7 +235,7 @@ def __missing_ids_message(missing_ids, multiple_samples, id_data):
             for missing_id in missing_ids[database]:
                 num_missing_ids = missing_ids[database][missing_id]
                 if multiple_samples:
-                    proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}% samples)'
+                    proportion = f' ({round(num_missing_ids/number_of_samples*100,1)}%)'
                 else:
                     proportion = ""
                 database_name = __get_name_for_id(missing_id, metadata[database])
@@ -244,7 +243,7 @@ def __missing_ids_message(missing_ids, multiple_samples, id_data):
                     database_name_string = f' ({database_name})'
                 else:
                     database_name_string = ''
-                print(f"\t{missing_id}{database_name_string}: {num_missing_ids}{proportion}")
+                print(f"\t{missing_id}{database_name_string} in {num_missing_ids}{proportion} samples")
 
 def __get_metadata(database):
     """get metdata from json file for specified database

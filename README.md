@@ -140,7 +140,6 @@ By combining these non-RBHs with the RBHs the total coverage of each database by
 | Resfinder vs CARD | 413 | 2509 (98.6%) |
 | Resfinder vs NCBI | 111 | 2519 (99.1%) |
 
-
 ## Building a Networkx graph
 Steps include
 * Sort and filter RBHs to 

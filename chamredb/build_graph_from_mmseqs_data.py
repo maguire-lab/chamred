@@ -1,5 +1,5 @@
-from  functions import graph_functions
-from  functions import hit_functions
+from  chamredb.functions import graph_functions
+from  chamredb.functions import hit_functions
 
 import os
 import json
