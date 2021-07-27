@@ -20,7 +20,7 @@ setuptools.setup(
             'chamredb = chamredb.run_chamredb:main'
         ]
     },
-    install_requires=['networkx', 'pronto', 'rich'],
+    install_requires=['networkx', 'pronto', 'rich', 'pandas'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'coverage'],
     classifiers=[ 
