@@ -4,18 +4,30 @@ import os
 import json
 import itertools
 
-def add_rbh_hits_to_graph(sourceDB,targetDB, graph, debug = False):
 
+def get_rbh_data(sourceDB,targetDB):
+    """
+    get_rbh_data get pre-calculated sorted reciprocal best hit data
+
+    Args:
+        sourceDB (string): source database
+        targetDB (string): target database
+
+    Returns:
+        pandas dataframe: dataframe of mmseqs2 data when RBHs were found by comparing the source and target databases
+    """
     rbh_data = pd.read_csv(
-                    os.path.join(
-                        os.path.dirname(os.path.abspath(__file__)),
-                        "..", "..", "results",
-                        f"mmseqs_{sourceDB}_vs_{targetDB}.rbh.sorted.tsv"
-                    ), sep="\t")
+                os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "..", "data", "mmseqs2_results",
+                    f"mmseqs_{sourceDB}_vs_{targetDB}.rbh.sorted.tsv"
+                ), sep="\t")
+    return rbh_data
+
+
+def add_rbh_hits_to_graph(sourceDB,targetDB,rbh_data,graph,debug=False):
 
     sourceDB_metadata,targetDB_metadata = __load_metadata(sourceDB,targetDB)
-
-    # print(sourceDB_metadata.keys())
     for _, row in rbh_data.iterrows():
         source_node_attributes = sourceDB_metadata[row['query']]
         source_node_attributes['database'] = sourceDB
@@ -30,20 +42,32 @@ def add_rbh_hits_to_graph(sourceDB,targetDB, graph, debug = False):
             {
                 'type': 'RBH',
                 'identity': row['fident'],
-                'coverage': row['alnlen']/(row['qend'] - row['qstart'] + 1)
+                'coverage': row['alnlen']/row['qend']
             },
             debug = debug
         )
 
-def add_search_hits_to_graph(sourceDB,targetDB,graph,debug=False):
+def get_search_data(sourceDB,targetDB):
+    """
+    get_search_data get pre-calculated sorted search data
 
+    Args:
+        sourceDB (string): source database
+        targetDB (string): target database
+
+    Returns:
+        pandas dataframe: dataframe of mmseqs2 data when matches were found found by comparing the source and target databases
+    """
     search_data = pd.read_csv(
                     os.path.join(
                         os.path.dirname(os.path.abspath(__file__)),
-                        "..", "..", "results",
+                        "..", "data", "mmseqs2_results",
                         f"mmseqs_{sourceDB}_vs_{targetDB}.search.sorted.tsv"
                     ), sep="\t")
+    return search_data
 
+
+def add_search_hits_to_graph(sourceDB,targetDB,search_data,graph,debug=False):
     sourceDB_metadata,targetDB_metadata = __load_metadata(sourceDB,targetDB)
 
     # OWH == One Way Hit
@@ -61,7 +85,7 @@ def add_search_hits_to_graph(sourceDB,targetDB,graph,debug=False):
             {
                 'type': 'OWH',
                 'identity': row['fident'],
-                'coverage': row['alnlen']/(row['qend'] - row['qstart'] + 1)
+                'coverage': row['alnlen']/row['qend']
             },
             debug=debug
         )

@@ -80,6 +80,9 @@ def test_write_multiple_node_info_from_hamronization(chamredb_graph):
         )
         with open(temp_output.name) as multiple_dbs_output_file:
             multiple_dbs_output = multiple_dbs_output_file.read()
+            print(expected_multiple_dbs_output)
+            print("============================================================")
+            print(multiple_dbs_output)
             assert expected_multiple_dbs_output == multiple_dbs_output
 
     

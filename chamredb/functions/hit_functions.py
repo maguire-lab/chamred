@@ -5,7 +5,7 @@ import os
 def filter_and_sort_rbhs(sourceDB,targetDB):
     unsorted_file = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "..", "..", "results",
+        "..", "data", "mmseqs2_results",
         f"mmseqs_{sourceDB}_vs_{targetDB}.rbh.tsv"
     )
     sorted_file = os.path.join(os.path.dirname(unsorted_file), f'{os.path.splitext(os.path.basename(unsorted_file))[0]}.sorted.tsv')
@@ -37,7 +37,7 @@ def filter_and_sort_non_rbhs(sourceDB,targetDB):
     rbh_ids = list(pd.read_csv(
                     os.path.join(
                         os.path.dirname(os.path.abspath(__file__)),
-                        "..", "..", "results",
+                        "..", "data", "mmseqs2_results",
                         f"mmseqs_{sourceDB}_vs_{targetDB}.rbh.sorted.tsv"
                     ), sep="\t"
                 )['query'])
@@ -45,7 +45,7 @@ def filter_and_sort_non_rbhs(sourceDB,targetDB):
 
     unsorted_file = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
-                "..", "..", "results",
+                "..", "data", "mmseqs2_results",
                 f"mmseqs_{sourceDB}_vs_{targetDB}.search.tsv"
             )
     sorted_file = os.path.join(os.path.dirname(unsorted_file), f'{os.path.splitext(os.path.basename(unsorted_file))[0]}.sorted.tsv')

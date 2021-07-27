@@ -14,8 +14,10 @@ for permutation in itertools.permutations(['card', 'ncbi', 'resfinder'], r=2):
     targetDB = permutation[1]
     hit_functions.filter_and_sort_rbhs(sourceDB,targetDB)
     hit_functions.filter_and_sort_non_rbhs(sourceDB,targetDB)
-    graph_functions.add_rbh_hits_to_graph(sourceDB,targetDB,G)
-    graph_functions.add_search_hits_to_graph(sourceDB,targetDB,G)
+    rbh_data = graph_functions.get_rbh_data(sourceDB,targetDB)
+    graph_functions.add_rbh_hits_to_graph(sourceDB,targetDB,rbh_data,G)
+    search_data = graph_functions.get_search_data(sourceDB,targetDB)
+    graph_functions.add_search_hits_to_graph(sourceDB,targetDB,search_data,G)
 
 
 out_path = os.path.join(
