@@ -25,7 +25,7 @@ The hypothesis for the project is as follows:
    Details can be found in the [appendices](/docs/appendices.md#data-download)
  * Parse the data to
    * extract the protein sequences and write into fasta format with the gene identifiers as the record ids.
-   * extract the associated metadata and convert to a consistent `JSON` format
+   * extract the associated metadata and convert to a consistent `JSON` format  
    Details can be found in the [appendices](/docs/appendices.md#data-parsing)
  * Find best matches of each gene from one source database against the other two target databases
    * Where a reciprocal best hit (RBH) exists, report this.  
@@ -43,8 +43,8 @@ The hypothesis for the project is as follows:
   * the edges link nodes and represent the matches and attributes include
     * type either RBH or OWH (one way hit)
     * coverage (alignment length/query length)
-    * identity (percent identity of match) 
-  See the image below for a pictoral example using made up data
+    * identity (percent identity of match)  
+  See the image below for a pictoral example using made up data  
   ![network diagram](docs/images/chamredb_network.png) 
 
 
@@ -58,7 +58,7 @@ The graph can be queried in one of 3 ways
     ```
     chamredb query -d ncbi -i qnrB2
     ```
-    The output reports the matches and metadata from the other databases
+    The output reports the matches and metadata from the other databases  
     ![qnrB2](/docs/images/qnrB2.png)
 
     Another example where the matches are one way hits not RBHs
