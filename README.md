@@ -1,199 +1,81 @@
-# project mAMRite
-![mAMRite](images/mAMRite.png)  
-
-👆This is a placeholder whilst searching for a better name (the joke may be lost on non-Brits)  
-
-Other potential names include
-* AMRinAMR  
-  ![AMRinAMR](images/AMRinAMR.png)
-* CharmeDb  
-  ![CharmeDb](images/CharmeDb.png)
+# CharmeDb 
+![CharmeDb](docs/images/CharmeDb.png)  
+(pronounced 'charmed' `/tʃɑː(r)md/`)
+  
 
 
-Steps taken so far
+Previously known as Project ![mAMRite](docs/images/mAMRite_small.png)  
 
-## Download data
+(Abandoned for obvious trademark issues and the fact that the joke may be lost on non-Brits)  
 
-### CARD
-#### Metadata
-ARO ontology
-```
-wget https://github.com/arpcard/aro/raw/master/src/ontology/aro.obo -O db_metadata/card.obo
-```
-#### Sequence data
-##### Protein
-```
-wget https://card.mcmaster.ca/latest/data -O card_db/data
-cd card_db; tar -xvf ./data protein_fasta_protein_homolog_model.fasta
-```
+## Introduction
+This project originated from the dilema a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
 
-##### Nucleotide
-```
-tar -xvf data ./nucleotide_fasta_protein_homolog_model.fasta
-```
+The hypothesis for the project is as follows:  
+ * given a match in one database
+ * find the matches in other databases
+ * aggregate the combined desriptive information pertaining to antimicrobial resistance contained in the union of the metadata
+ * report this to user for them to make intelligent informed choices
 
-### NCBI
+## Methodology
+ * Download sequences and associated metadata of ARGs from 3 databases
+   * [CARD](https://card.mcmaster.ca/) ([Manuscript](http://www.ncbi.nlm.nih.gov/pubmed/31665441))
+   * [NCBI AMR Reference Gene Catalog](https://www.ncbi.nlm.nih.gov/pathogens/refgene/) 
+   * [Resfinder 4](https://bitbucket.org/genomicepidemiology/resfinder/src/4.0/) ([Manuscipt](https://academic.oup.com/jac/article/75/12/3491/5890997))  
+   Details can be found in the [appendices](/docs/appendices.md#data-download)
+ * Parse the data to
+   * extract the protein sequences and write into fasta format with the gene identifiers as the record ids.
+   * extract the associated metadata and convert to a consistent `JSON` format
+   Details can be found in the [appendices](/docs/appendices.md#data-parsing)
+ * Find best matches of each gene from one source database against the other two target databases
+   * Where a reciprocal best hit (RBH) exists, report this.  
+     Details can be found in the [appendices](/docs/appendices.md#analyse-for-reciprocal-best-hits-rbhs).  
+     A summary of the results can be found [here](/docs/appendices.md#summary-of-rbh-analysis)
+   * If a RBH does not exist, report the best match as long as thresholds for coverage and indentity are met.   
+    A summary of the results can be found [here](/docs/appendices.md#summary-of-non-rbh-searches)
+  
+  For this purpose the [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/29035372/) search tool was used that in its most sensitive mode is 100x faster than blastp and almost as sensitive. In a [comparative manuscript](https://pubmed.ncbi.nlm.nih.gov/33099302/) demonstrated that even in the worst cases mmseqs would not miss more than 10% of the RBH produced by blastp. MMseqs2 also contains a convenient wrapper to perform the all-by-all search necessary to find RBHs.
+* From the outputs of the MMseqs2 searches the RBHs or best matches of each gene from one database against the other two databases can be parsed to produce a `Directed Graph`. This netowrk was constructed using the [networkx](https://networkx.org/) python package.  
+  Details of the method can be found [here](docs/appendices.md#building-a-networkx-graph)  
+  In this graph 
+  * the nodes represent a protein from one database
+    * Node attributes contain the phenotype from the JSON metadata
+  * the edges link nodes and represent the matches and attributes include
+    * type either RBH or OWH (one way hit)
+    * coverage (alignment length/query length)
+    * identity (percent identity of match) 
+  See the image below for a pictoral example using made up data
+  ![network diagram](docs/images/chamredb_network.png) 
 
-#### Metadata
-```
-wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/ReferenceGeneCatalog.txt -O db_metadata/ncbi.metadata.tsv
-```
-
-#### Sequence data
-##### Protein
-```
-wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/AMRProt -O db_fastas/ncbi.protein.raw.fasta
-```
-Nucleotide sequences
-```
-wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/AMR_CDS -O db_fastas/ncbi.nucl.raw.fasta
-```
-
-### Resfinder
-
-#### Metadata
-```
-wget https://bitbucket.org/genomicepidemiology/resfinder_db/raw/master/phenotypes.txt -O db_metadata/resfinder.metadata.tsv
-```
-
-#### Sequences
-```
-git clone https://bitbucket.org/genomicepidemiology/resfinder_db
-cat resfinder_db/*.fsa > db_fastas/resfinder.nucl.fasta
-```
-
-## Parse data
-
-### CARD
-Write out protein file with just the CARD ARO ids as fasta headers
-[parse_card_proteins.py](scripts/parse_card_proteins.py)
-
-
-Process the [ARO obo data](db_metadata/card.metadata.obo) to write out `confers_resistance..` and `is_a` metadata to a JSON file where the ARO ids are keys
-[parse_card_metadata.py](scripts/parse_card_metadata.py)
-
-### NCBI
-Only include those in the core AMR/AMR (acquired) set and remove duplicates with the script. Use the `refseq_protein_accession` as the fasta header
-[parse_ncbi_proteins.py](scripts/parse_ncbi_proteins.py)
-
-This produced the output file [ncbi.protein.fasta](db_fastas/ncbi.protein.fasta) with 4542 protein sequences
-
-Metadata JSON file was created using `refseq_protein_accession` as keys and drug subclass as the metadata value
-[parse_ncbi_metadata.py](scripts/parse_ncbi_metadata.py)
-
-
-### Resfinder
-Found best ORF from nucleotide and removed duplicated gene/alleles with the script
-[resfinder_orfs_to_proteins.py](scripts/resfinder_orfs_to_proteins.py)
-
-This produced the output file [resfinder.protein.fasta](db_fastas/resfinder.protein.fasta) with 2543 protein sequences
-
-Metadata json was created using the [resfinder.metadata.tsv](db_metadata/resfinder.metadata.tsv) as input so that the gene name was the key and phenotype was the metadata value
-
-## Analyse for Reciprocal Best Hits (RBHs)
-Used the [MMseqs2](https://github.com/soedinglab/MMseqs2) software that allows very fast protein clustering - see this [publication](https://www.nature.com/articles/s41467-018-04964-5)
-Performance characteristics in this [comparison publication](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-07132-6)
-
-Commands run were
-* For each query database (DB1) vs target database (DB2)
-  * reciprocal blast hit analysis
-    ```
-    mmseqs easy-rbh db_fastas/<DB1>.protein.fasta  db_fastas/<DB2>.protein.fasta  results/mmseqs_<DB1>_vs_<DB2>.rbh.tsv tmp -s 7.5
-    ```
-  * run a search for top 3 hits so that proteins that did not return a RBH have matches to be reported
-    ```
-    # make database for query DB1
-    mmseqs createdb db_fastas/<DB1>.protein.fasta mmseqs_DBs/<DB1>.protein
-    mmseqs createindex mmseqs_DBs/<DB1>.protein tmp
-    # make database for target DB2
-    mmseqs createdb db_fastas/<DB1>.protein.fasta mmseqs_DBs/<DB1>.protein
-    mmseqs createindex mmseqs_DBs/<DB1>.protein tmp
-
-    # search DB2 with DB1 to get top 3 hits
-    mmseqs search mmseqs_DBs/<DB1>.protein mmseqs_DBs/<DB2>.protein mmseqs_search_DBs/<DB1>_vs_<DB2>_search tmp -s 7.5 --max-accept 3
-    mmseqs convertalis  mmseqs_DBs/<DB1>.protein mmseqs_DBs/<DB2>.protein mmseqs_search_DBs/<DB1>_vs_<DB2>_search results/mmseqs_<DB1>_vs_<DB2>.search.tsv
-    ```
-These commands can be found in [find_rbhs_and_search_matches.sh](scripts/find_rbhs_and_search_matches.sh)
-
-### Summary of RBH analysis
-
-| Comparison | Number of proteins |Number of RBH |
-| ----| ---- | ----- |
-| CARD vs NCBI |  2979 (CARD)<br>4542 (NCBI) | 2601 (87.3% of CARD proteins) |
-| CARD vs Resfinder |  2979 (CARD)<br>2543 (Resfinder) | 2073 (69.6% of CARD proteins) |
-| NCBI vs CARD |  4542 (NCBI)<br>2979 (CARD) | 2624 (57.7% of NCBI proteins) |
-| NCBI vs Resfinder |  4542 (NCBI)<br>Resfinder (CARD) | 2399 (52.8% of NCBI proteins) |
-| Resfinder vs CARD |  2543 (Resfinder)<br>2979 (CARD) | 2096 (82.4% of Resfinder proteins) |
-| Resfinder vs NCBI |  2543 (Resfinder)<br>4542 (NCBI) | 2408 (94.7% of Resfinder proteins) |
-
-
-### Summary of non-RBH searches
-After searching the results were filtered to remove RBH hits using the script [build_graph_from_mmseqs_data.py](package/build_graph_from_mmseqs_data.py) (see later for a description)
-By combining these non-RBHs with the RBHs the total coverage of each database by another can be determined
-
-| Comparison |Number of proteins that return matches | total proteins covered by RBH and search|
-| ----| ---- | ---- |
-| CARD vs NCBI | 274 | 2875 (96.5%)|
-| CARD vs Resfinder | 739 | 2778 (93.2%)|
-| NCBI vs CARD | 1898 | 4542 (99.6%) |
-| NCBI vs Resfinder | 2069 | 4495 (99.4%) |
-| Resfinder vs CARD | 413 | 2509 (98.6%) |
-| Resfinder vs NCBI | 111 | 2519 (99.1%) |
-
-## Building a Networkx graph
-Steps include
-* Sort and filter RBHs to 
-  * sort by query then percent_id match and alignment length
-  * remove duplicates (this will keep best match)
-  * see the `filter_and_sort_rbhs` function in [hit_functions.py](package/functions/hit_functions.py)
-* Filter the non-RBH search matches to find those that do not already have a RBH match
-  * get search matches from search that do not have a corresponding accession in the RBH hits
-  * sort by query then percent_id match and alignment length
-  * see the `filter_and_sort_non_rbhs` function in [hit_functions.py](package/functions/hit_functions.py)
-* Make a directed graph (DiGraph) in networkx where
-  * the nodes have attributes pulled from the metadata
-  * the edges link nodes which have attributes
-    * `type` either `RBH` or `OWH` (one way hit) for a search match
-    * `coverage` alignment length/query length
-    * `identity` percent identity of hit
-  * See functions `add_rbh_hits_to_graph` and `add_search_hits_to_graph` in [graph_functions.py](package/functions/graph_functions.py)
-
-These are all combined in the [build_graph_from_mmseqs_data.py](package/build_graph_from_mmseqs_data.py) script
 
 ## Querying the graph
-The [build_graph_from_mmseqs_data.py](package/build_graph_from_mmseqs_data.py) script writes out the graph in JSON format.
+The graph can be queried in one of 3 ways  
+1) Querying an individual gene by specifying the identifier `-i` and database `-d`
+    ```
+    chamredb query -d ncbi -i WP_012695489.1 
+    ```
+    Alternatively the gene name can be used
+    ```
+    chamredb query -d ncbi -i qnrB2
+    ```
+    The output reports the matches and metadata from the other databases
+    ![qnrB2](/docs/images/qnrB2.png)
 
-The script [query_graph.py](package/query_graph.py) loads this data and then performs some example queries
+    Another example where the matches are one way hits not RBHs
+    ```
+    chamredb query -d resfinder -i "aac(3)-IIIb"
+    ```
+    ![aac(3)-IIIb](/docs/images/aac(3)-IIIb.png)
+    In these outputs ↔ means a RBH, and ➡ a search hit
 
-### Testing if an edge exists
-```
-print(G.has_edge('resfinder:blaCMY-1', 'card:ARO:3002012'))
-True
-
-```
-
-```
-print(G.has_edge('card:ARO:3002012', 'resfinder:blaCMY-1'))
-True
-```
-
-The more useful function determines the matches in other databases and their associated metadata
-
-e.g
-
-```
-graph_functions.print_edge_info('card:ARO:3001816', G)
-```
-
-![card:ARO:3001816](images/card_ACC2.png)
-
-```
-graph_functions.print_edge_info('resfinder:aac(3)-IIIb', G)
-```
-
-![resfinder:aac(3)-IIIb](images/resfinder_aac(3)-IIIb.png)
-
-In these outputs ↔ means a RBH, and ➡ a search hit
-
-
-
+2) Providing a list of identifiers from a single database `-d` in a text file `-f` and specifying a path for the tsv output file 
+    ```
+    chamredb query -d card -f docs/data/card_ids.txt  -o docs/data/card_ids.tsv
+    ```
+    This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
+3) Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from an antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
+**Please Note** only outputs using data derived from AMR detection tools that have searched either the `CARD`, `NCBI` or `Resfinder 4 ` databases can be used.
+    ```
+    chamredb query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary.tsv
+    ```
+    This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the matches and associated metadata with one row per id in the text file
