@@ -49,33 +49,49 @@ The hypothesis for the project is as follows:
 
 
 ## Querying the graph
+```
+usage: chamredb query
+  [-h]
+  [-d {card,ncbi,resfinder}]
+  [-ct COVERAGE_THRESHOLD] [-it IDENTITY_THRESHOLD]
+  (-i ID | -f ID_FILE | -j HAMRONIZATION_JSON_FILE)
+  [-o OUTFILE_PATH]
+```
 The graph can be queried in one of 3 ways  
-1) Querying an individual gene by specifying the identifier `-i` and database `-d`
-    ```
-    chamredb query -d ncbi -i WP_012695489.1 
-    ```
-    Alternatively the gene name can be used
-    ```
-    chamredb query -d ncbi -i qnrB2
-    ```
-    The output reports the matches and metadata from the other databases  
-    ![qnrB2](/docs/images/qnrB2.png)
+### 1. Querying an individual
+Requires specifying the identifier `-i` and database `-d`  
+```
+chamredb query -d ncbi -i WP_012695489.1 
+```
+Alternatively the gene name can be used
+```
+chamredb query -d ncbi -i qnrB2
+```
+The output reports the matches and metadata from the other databases  
+![qnrB2](/docs/images/qnrB2.png)
 
-    Another example where the matches are one way hits not RBHs
-    ```
-    chamredb query -d resfinder -i "aac(3)-IIIb"
-    ```
-    ![aac(3)-IIIb](/docs/images/aac(3)-IIIb.png)
-    In these outputs ↔ means a RBH, and ➡ a search hit
+Another example where the matches are one way hits not RBHs
+```
+chamredb query -d resfinder -i "aac(3)-IIIb"
+```
+![aac(3)-IIIb](/docs/images/aac(3)-IIIb.png)
+In these outputs ↔ means a RBH, and ➡ a search hit
 
-2) Providing a list of identifiers from a single database `-d` in a text file `-f` and specifying a path for the tsv output file 
-    ```
-    chamredb query -d card -f docs/data/card_ids.txt  -o docs/data/card_ids.tsv
-    ```
-    This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
-3) Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from an antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
-**Please Note** only outputs using data derived from AMR detection tools that have searched either the `CARD`, `NCBI` or `Resfinder 4 ` databases can be used.
-    ```
-    chamredb query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary.tsv
-    ```
-    This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the matches and associated metadata with one row per id in the text file
+### 2. Providing a list of identifiers from a single database
+Requires specifying the database `-d`, the text file containing the ids `-f`, and a path for the tsv output file `-o`  
+
+```
+chamredb query -d card -f docs/data/card_ids.txt  -o docs/data/card_ids.tsv
+```
+This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
+### 3. Use hAMRonization summary output
+Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from an antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
+Use `-j` to specify the json summary file and `-o` the path for the TSV output  
+**Please Note**  
+Only outputs using data derived from AMR detection tools that have searched either the `CARD`, `NCBI` or `Resfinder 4 ` databases can be used.
+
+```
+chamredb query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary.tsv
+```
+
+This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the matches and associated metadata with one row per id in the text file
