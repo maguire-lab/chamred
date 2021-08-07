@@ -47,6 +47,40 @@ The hypothesis for the project is as follows:
   See the image below for a pictoral example using made up data  
   ![network diagram](docs/images/chamredb_network.png) 
 
+## Assessing the graph
+In order to look at the 19132 matches within the database and assess the affetciveness of the methodology the database names for matches were compared with the [Normalized Levensthein algorithm](https://devopedia.org/levenshtein-distance#qst-ans-3).
+Before calculating the name similarity between the source and target of a match the name was cleaned using the following steps
+1. Removing species names from database names (exclusively in the CARD database) e.g `Staphylococcus aureus mupB conferring resistance to mupirocin`
+2. Coversion to lower case
+3. Removing the bla prefix
+4. Removing parentheses
+5. Removing hyphens
+
+N.B blaPAO-N and blaPDC matches are the source of 562 low name similarities so were skipped
+
+The resulting data is plotted below showing
+a) distribution of levenshtein smilarities between the database names of the best matches
+b) distribution sequence identities for the best matches
+c) plot of the levenshtein smilarity versus the sequence identity for each match
+![analysis plots](scripts/analysis.png)
+The red line shows the correlation including 95% confidence intervals.
+d) A violin plot showing the distribution of the difference between the observed name similarity and that predicted by a linear regression model fitting name smilarity to 
+
+If we fit `sequence_identity` to `name_similarity` with this function
+
+```
+linear_fit = np.polyfit(
+    distance_dataframe['sequence_identity'],
+    distance_dataframe['name_similarity'],
+    1
+)
+```
+
+The predicted name similarity for a sequence identity of 0.95 is 0.69
+```
+np.polyval(linear_fit, 0.95)
+0.6898250936869554
+```
 
 ## Querying the graph
 ```

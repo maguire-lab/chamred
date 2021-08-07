@@ -246,8 +246,9 @@ figure_path=os.path.join(
 )
 fig.savefig(figure_path)
 
+# distribution of name smilarities
 fig=plt.figure(figsize=(15,17))
-fig.subplots_adjust(top=0.9)
+
 fig.suptitle(
     "Analysis of distributions of name similarities and differences\nbetween observed and predicted name similarities",
     fontsize='xx-large'
@@ -291,7 +292,10 @@ sns.violinplot(
 )
 ########## violin plot 3 ###############
 similarity_difference_plot_ax=plt.subplot2grid((2, 4), (1, 0), rowspan=1, colspan=1)
-similarity_difference_plot_ax.set_title(f'Dist of differences from linear\nregression predictions including alleles\nfrom matches with >= 0.95 id')
+similarity_difference_plot_ax.set_title(
+f"""Dist of differences from linear regression
+predictions including alleles
+from matches with >= 0.95 id""")
 
 sns.boxplot(
     ax=similarity_difference_plot_ax,
@@ -310,7 +314,10 @@ sns.violinplot(
 
 ########## violin plot 4 ###############
 low_similarity_difference_plot_ax=plt.subplot2grid((2, 4), (1, 1), rowspan=1, colspan=1)
-low_similarity_difference_plot_ax.set_title(f'Dist of differences from linear\nregression predictions including alleles\nfrom matches with >= 0.95 id + name similarity <= {round(predicted_name_similarity,2)}')
+low_similarity_difference_plot_ax.set_title(
+f"""Dist of differences from linear regression
+predictions including alleles from matches
+with >= 0.95 id + name similarity <= {round(predicted_name_similarity,2)}""")
 
 sns.boxplot(
     ax=low_similarity_difference_plot_ax,
@@ -329,7 +336,11 @@ sns.violinplot(
 
 ########## violin plot 5 ###############
 similarity_difference_wo_alleles_plot_ax=plt.subplot2grid((2, 4), (1, 2), rowspan=1, colspan=1)
-similarity_difference_wo_alleles_plot_ax.set_title(f'Dist of differences from linear\nregression predictions without alleles\nfrom matches with >= 0.95 id')
+similarity_difference_wo_alleles_plot_ax.set_title(
+f"""Dist of differences from linear regression
+predictions without alleles
+from matches with >= 0.95 id"""
+)
 
 sns.boxplot(
     ax=similarity_difference_wo_alleles_plot_ax,
@@ -348,7 +359,11 @@ sns.violinplot(
 
 ########## violin plot 6 ###############
 low_similarity_difference_wo_alleles_plot_ax=plt.subplot2grid((2, 4), (1, 3), rowspan=1, colspan=1)
-low_similarity_difference_wo_alleles_plot_ax.set_title(f'Dist of differences from linear\nregression predictions without alleles\nfrom matches with >= 0.95 id + name similarity <= {round(predicted_name_similarity_without_alleles,2)}')
+low_similarity_difference_wo_alleles_plot_ax.set_title(
+f"""Dist of differences from linear regression
+predictions without alleles from matches
+with >= 0.95 id + name similarity <= {round(predicted_name_similarity_without_alleles,2)}"""
+)
 
 sns.boxplot(
     ax=low_similarity_difference_wo_alleles_plot_ax,
@@ -365,6 +380,8 @@ sns.violinplot(
     data=low_name_similarity_without_alleles
 )
 
+plt.tight_layout()
+fig.subplots_adjust(top=0.9, right=0.95)
 figure_path=os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "name_similarity_distribution_analysis.png"
