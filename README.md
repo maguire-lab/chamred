@@ -62,11 +62,11 @@ The resulting data is plotted below showing
 a) distribution of levenshtein smilarities between the database names of the best matches
 b) distribution sequence identities for the best matches
 c) plot of the levenshtein smilarity versus the sequence identity for each match
-![analysis plots](scripts/analysis.png)
+![analysis plots](scripts/seq_id_and_name_sim_analysis.png)
 The red line shows the correlation including 95% confidence intervals.
-d) A violin plot showing the distribution of the difference between the observed name similarity and that predicted by a linear regression model fitting name smilarity to 
-
-If we fit `sequence_identity` to `name_similarity` with this function
+A second plot shows 
+a) A violin plot showing the distribution of the name similarity differences for those matches where the sequence identity is greater than 0.95.
+[Data](scripts/low_name_similarity.csv) for matches where the sequence identity is > than 0.95 and the name similarity is less than the predicted value based on a linear regression model of 0.69 was created.
 
 ```
 linear_fit = np.polyfit(
@@ -74,13 +74,18 @@ linear_fit = np.polyfit(
     distance_dataframe['name_similarity'],
     1
 )
-```
-
-The predicted name similarity for a sequence identity of 0.95 is 0.69
-```
 np.polyval(linear_fit, 0.95)
 0.6898250936869554
 ```
+In this data, many of the differences in the name are due to matches with the same gene family but different alleles e.g `blaADC-125` in the `ncbi` database and `blaADC-25` in the `resfinder 4` database.  
+Data for this where sequence identity is > than 0.95 and the name similarity is less than the predicted value based on a linear regression model of 0.86 was created [here](scripts/low_name_similarity_without_alleles.csv). The right hand panel(s) shows data where these allelic differences have been removed.  
+Some of these are clearly relate genes but the databases have different nomneclature e.g  
+`vanA` in `card` and `VanHAX` in `resfinder 4.0` or  
+`catA15` in `ncbi` or `Clostridium butyricum catB` in `card` **N.B** The species names are removed in the name cleaning function.  
+In other cases the names are completely different, e.g  
+`gimA` in `card` and `mgt`  in `ncbi` but the sequences are 99.5% identical. `gimA` is a macrolide glycosyltransferase and may confer resistance to spiramycin. `mgt` in the `ncbi` database stands for `macrolide-inactivating glycosyltransferase`. Clearly the genes are likley to have the same function but have been assigned different names in the two databases.
+b) The lower section of the figure contains violin plots showing the distribution of the difference between the observed name similarity and that predicted by a linear regression model fitting name smilarity to sequence identity.
+![analysis plots](scripts/name_similarity_distribution_analysis.png)
 
 ## Querying the graph
 ```

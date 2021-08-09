@@ -192,7 +192,6 @@ distance_df_ignoring_alleles=(
 sequence_identity_threshold=0.95
 predicted_name_similarity_without_alleles=np.polyval(linear_fit, sequence_identity_threshold)
 
-
 high_seq_id_similarity_without_alleles=distance_df_ignoring_alleles.query('sequence_identity >= @sequence_identity_threshold')
 low_name_similarity_without_alleles=distance_df_ignoring_alleles.query('sequence_identity >= @sequence_identity_threshold and name_similarity_without_alleles <= @predicted_name_similarity_without_alleles')
 
