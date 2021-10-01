@@ -1,6 +1,7 @@
 import os
 import json
 import re
+from scipy import stats
 
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -209,7 +210,7 @@ fig.suptitle(
     fontsize='xx-large'
 )
 distance_distribution_plot_ax=plt.subplot2grid((2, 2), (0, 0), rowspan=1, colspan=1)
-distance_distribution_plot_ax.set_title('Distribution of normalised Levenshtein\ndistances between match names')
+distance_distribution_plot_ax.set_title('A: Distribution of normalised Levenshtein\ndistances between match names')
 
 distance_distribution_plot=sns.histplot(
     ax=distance_distribution_plot_ax,
@@ -219,7 +220,7 @@ distance_distribution_plot=sns.histplot(
 )
 
 identity_distribution_plot_ax=plt.subplot2grid((2, 2), (0, 1), rowspan=1, colspan=1)
-identity_distribution_plot_ax.set_title('Distribution of sequence\nidentities between match')
+identity_distribution_plot_ax.set_title('B: Distribution of sequence\nidentities between match')
 
 identity_distribution_plot=sns.histplot(
     ax=identity_distribution_plot_ax,
@@ -227,8 +228,12 @@ identity_distribution_plot=sns.histplot(
     data=distance_dataframe,
     binwidth=0.05
 )
+
+# get coeffs of linear fit
+slope, intercept, r_value, p_value, std_err = stats.linregress(distance_dataframe['sequence_identity'],distance_dataframe['name_similarity'])
+
 identity_vs_distance_plot_ax=plt.subplot2grid((2, 2), (1, 0), rowspan=1, colspan=2)
-identity_vs_distance_plot_ax.set_title('Normalised Levenshtein distances\nvs sequence identities')
+identity_vs_distance_plot_ax.set_title('C: Normalised Levenshtein distances\nvs sequence identities')
 
 identity_vs_distance_plot=sns.regplot(
     ax=identity_vs_distance_plot_ax,
@@ -236,8 +241,12 @@ identity_vs_distance_plot=sns.regplot(
     y="name_similarity",
     scatter_kws={"s": 10, 'alpha': 0.1},
     line_kws={"color": "red"},
+    label="y={0:.2f}x+{1:.2f}. R^2={2:.2f}".format(slope,intercept,r_value),
     data=distance_dataframe,
-    marker="+")
+    marker="+").legend(loc="best", fontsize=15)
+
+identity_vs_distance_plot_ax.set_xlim(0,1)
+identity_vs_distance_plot_ax.set_ylim(0,1)
 
 figure_path=os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -254,7 +263,7 @@ fig.suptitle(
 )
 ########## violin plot 1 ###############
 name_similarity_plot_ax=plt.subplot2grid((2, 4), (0, 0), rowspan=1, colspan=2)
-name_similarity_plot_ax.set_title(f'Dist of name similarities including alleles\nfrom matches with >= 0.95 id')
+name_similarity_plot_ax.set_title(f'A: Dist of name similarities including alleles\nfrom matches with >= 0.95 id')
 
 sns.boxplot(
     ax=name_similarity_plot_ax,
@@ -273,7 +282,7 @@ sns.violinplot(
 
 ########## violin plot 2 ###############
 name_similarity_wo_alleles_plot_ax=plt.subplot2grid((2, 4), (0, 2), rowspan=1, colspan=2)
-name_similarity_wo_alleles_plot_ax.set_title(f'Dist of name similarities without alleles\nfrom matches with >= 0.95 id')
+name_similarity_wo_alleles_plot_ax.set_title(f'B: Dist of name similarities without alleles\nfrom matches with >= 0.95 id')
 
 sns.boxplot(
     ax=name_similarity_wo_alleles_plot_ax,
@@ -292,9 +301,9 @@ sns.violinplot(
 ########## violin plot 3 ###############
 similarity_difference_plot_ax=plt.subplot2grid((2, 4), (1, 0), rowspan=1, colspan=1)
 similarity_difference_plot_ax.set_title(
-f"""Dist of differences from linear regression
-predictions including alleles
-from matches with >= 0.95 id""")
+f"""C: Dist of differences from 
+linear regression predictions incl 
+alleles from matches with >= 0.95 id""")
 
 sns.boxplot(
     ax=similarity_difference_plot_ax,
@@ -314,8 +323,8 @@ sns.violinplot(
 ########## violin plot 4 ###############
 low_similarity_difference_plot_ax=plt.subplot2grid((2, 4), (1, 1), rowspan=1, colspan=1)
 low_similarity_difference_plot_ax.set_title(
-f"""Dist of differences from linear regression
-predictions including alleles from matches
+f"""D: Dist of differences from linear 
+regr. predictions incl. alleles from matches 
 with >= 0.95 id + name similarity <= {round(predicted_name_similarity,2)}""")
 
 sns.boxplot(
@@ -336,9 +345,9 @@ sns.violinplot(
 ########## violin plot 5 ###############
 similarity_difference_wo_alleles_plot_ax=plt.subplot2grid((2, 4), (1, 2), rowspan=1, colspan=1)
 similarity_difference_wo_alleles_plot_ax.set_title(
-f"""Dist of differences from linear regression
-predictions without alleles
-from matches with >= 0.95 id"""
+f"""E: Dist of differences from linear 
+regr. predictions without 
+alleles from matches with >= 0.95 id"""
 )
 
 sns.boxplot(
@@ -359,7 +368,7 @@ sns.violinplot(
 ########## violin plot 6 ###############
 low_similarity_difference_wo_alleles_plot_ax=plt.subplot2grid((2, 4), (1, 3), rowspan=1, colspan=1)
 low_similarity_difference_wo_alleles_plot_ax.set_title(
-f"""Dist of differences from linear regression
+f"""F: Dist of differences from linear regr.
 predictions without alleles from matches
 with >= 0.95 id + name similarity <= {round(predicted_name_similarity_without_alleles,2)}"""
 )
