@@ -1,17 +1,19 @@
 import pronto
 import json
 import os
+import re
 
 from pronto import relationship
 metadata_file =  os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "..", "db_metadata",
+            "..", "chamredb", "data", "db_metadata",
             "card.metadata.obo"
 )
 o = pronto.Ontology(metadata_file)
 
 metadata = {}
 for term in o.terms():
+    #print(term)
     metadata[term.id] = {'name': term.name}
     # add is_a superclass
     if len(list(term.superclasses(distance=1, with_self=False))) > 0:
@@ -25,9 +27,15 @@ for term in o.terms():
             if "phenotype" not in metadata[term.id]:
                 metadata[term.id]["phenotype"] = []
             metadata[term.id]["phenotype"].append(f"{relationship.name.replace('_', ' ')}: {antibiotics}")
+    # add publication metadata
+    if len(list(term.definition.xrefs)) > 0:
+        metadata[term.id]["PMID"] = []
+        for item in term.definition.xrefs:
+            metadata[term.id]["PMID"].append(item.id.replace("PMID:", ""))
 
 # second pass to pull out extra confers resistance from is_a relationships
 for id in metadata:
+    #print(metadata[id])
     if "is_a" in metadata[id]:
         is_a_ARO_id = ":".join(metadata[id]["is_a"].split(":")[0:2])
         if "phenotype" in metadata[is_a_ARO_id]:
@@ -37,7 +45,7 @@ for id in metadata:
 
 out_path =  os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "..", "db_metadata",
+            "..", "chamredb", "data", "db_metadata",
             "card.metadata.json"
 )
 
