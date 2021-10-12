@@ -1,11 +1,11 @@
-# project mAMRite
+# project CharmeDb
 # Appendicies
 ## Data Download
 ### CARD
 #### Metadata
 ARO ontology
 ```
-wget https://github.com/arpcard/aro/raw/master/src/ontology/aro.obo -O db_metadata/card.obo
+wget https://github.com/arpcard/aro/raw/master/src/ontology/aro.obo -O chamredb/data/db_metadata/card.metadata.obo
 ```
 #### Sequence data
 ##### Protein
