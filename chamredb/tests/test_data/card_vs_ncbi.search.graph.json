@@ -17,7 +17,7 @@
             "type": "OWH"
         },
         {
-        "coverage": 0.8551724137931035,
+            "coverage": 0.8551724137931035,
             "identity": 0.318,
             "source": "card:ARO:3000025",
             "target": "ncbi:WP_049554487.1",
@@ -27,6 +27,10 @@
     "multigraph": false,
     "nodes": [
         {
+            "PMID": [
+                "20709735",
+                "20937787"
+            ],
             "database": "card",
             "id": "card:ARO:3000024",
             "is_a": "ARO:3000748:subunit of efflux pump conferring antibiotic resistance",
@@ -34,37 +38,41 @@
         },
         {
             "alternative_id": {
-              "nucleotide_accession": "NG_056046.1"
+                "nucleotide_accession": "NG_056046.1"
             },
             "database": "ncbi",
             "duplicate_allele_ids": {
-              "nucleotide_accessions": [],
-              "protein_accessions": []
+                "nucleotide_accessions": [],
+                "protein_accessions": []
             },
             "id": "ncbi:WP_049554487.1",
             "name": "tetB(60)",
             "phenotype": "confers resistance to subclass TETRACYCLINE",
             "product": "tetracycline efflux ABC transporter Tet(60) subunit B"
-          },
-          {
+        },
+        {
             "alternative_id": {
-              "nucleotide_accession": "NG_056045.1"
+                "nucleotide_accession": "NG_056045.1"
             },
             "database": "ncbi",
             "duplicate_allele_ids": {
-              "nucleotide_accessions": [],
-              "protein_accessions": []
+                "nucleotide_accessions": [],
+                "protein_accessions": []
             },
             "id": "ncbi:WP_100931730.1",
             "name": "tetA(60)",
             "phenotype": "confers resistance to subclass TETRACYCLINE",
             "product": "tetracycline efflux ABC transporter Tet(60) subunit A"
-          },
-          {
+        },
+        {
+            "PMID": [
+                "20709735",
+                "20937787"
+            ],
             "database": "card",
             "id": "card:ARO:3000025",
             "is_a": "ARO:3000748:subunit of efflux pump conferring antibiotic resistance",
             "name": "patB"
-          }
+        }
     ]
 }
