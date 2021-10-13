@@ -7,6 +7,14 @@ Previously known as Project ![mAMRite](docs/images/mAMRite_small.png)
 
 (Abandoned for obvious trademark issues and the fact that the joke may be lost on non-Brits)  
 
+## Contributors
+[Adam Witney](https://gitlab.com/awitney)
+[Alex Manuele](https://gitlab.com/alexmanuele)
+[Inês Mendes](https://gitlab.com/cimendes)
+[Thanh Le Viet](https://gitlab.com/thanhleviet)
+[Trestan Pillonel](https://gitlab.com/tpillone)
+[Varun Shamanna](https://gitlab.com/varunshamanna4)
+
 ## Introduction
 
 This project originated from the dilemma a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
