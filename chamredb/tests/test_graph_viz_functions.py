@@ -18,8 +18,9 @@ def expected_print_node_info_output():
                 :link: [white]coverage:[/white] [grey66]1.0[/grey66]
                 :link: [white]identity:[/white] [grey66]0.995[/grey66]
                 :link: [white]type:[/white] [grey66]RBH[/grey66]
+                :page_facing_up: [white]PMID:[/white] [grey66]['18993034'][/grey66]
                 :page_facing_up: [white]is_a:[/white] [grey66]ARO:3000419:quinolone resistance protein (qnr)[/grey66]
-                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to drug class: fluoroquinolone antibiotic[/grey66]
+                :page_facing_up: [white]phenotype:[/white] [grey66][['confers resistance to antibiotic: gatifloxacin,sparfloxacin,levofloxacin,nalidixic acid,moxifloxacin,ciprofloxacin,norfloxacin', 'confers resistance to drug class: fluoroquinolone antibiotic']][/grey66]
           :file_cabinet: [orange_red1]resfinder[/orange_red1]
             :left_right_arrow: [orange_red1]qnrB2 (qnrB2)[/orange_red1]
                 :link: [white]coverage:[/white] [grey66]1.0[/grey66]
@@ -60,6 +61,7 @@ def test_write_multiple_node_info_from_ids(chamredb_graph):
             temp_output.name
         )
         with open(temp_output.name) as multiple_ids_output_file:
+            print(multiple_ids_output_file)
             multiple_ids_output = multiple_ids_output_file.read()
             assert expected_multiple_dbs_output == multiple_ids_output
 
@@ -85,5 +87,5 @@ def test_write_multiple_node_info_from_hamronization(chamredb_graph):
             print(multiple_dbs_output)
             assert expected_multiple_dbs_output == multiple_dbs_output
 
-    
+
 

@@ -9,9 +9,12 @@ import itertools
 
 G = nx.DiGraph()
 
+print("Building graph...")
+
 for permutation in itertools.permutations(['card', 'ncbi', 'resfinder'], r=2):
     sourceDB = permutation[0]
     targetDB = permutation[1]
+    print("    - {} vs {}".format(sourceDB, targetDB))
     hit_functions.filter_and_sort_rbhs(sourceDB,targetDB)
     hit_functions.filter_and_sort_non_rbhs(sourceDB,targetDB)
     rbh_data = graph_functions.get_rbh_data(sourceDB,targetDB)
@@ -24,6 +27,7 @@ out_path = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
                 "data", "graph.json"
             )
+print("Saving graph to {}".format(out_path))
 with open(out_path, "w") as out_file:
     out_file.write(
         json.dumps(json_graph.node_link_data(G), sort_keys=True, indent=2)
