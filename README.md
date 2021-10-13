@@ -8,12 +8,12 @@ Previously known as Project ![mAMRite](docs/images/mAMRite_small.png)
 (Abandoned for obvious trademark issues and the fact that the joke may be lost on non-Brits)  
 
 ## Contributors
-[Adam Witney](https://gitlab.com/awitney)
-[Alex Manuele](https://gitlab.com/alexmanuele)
-[Inês Mendes](https://gitlab.com/cimendes)
-[Thanh Le Viet](https://gitlab.com/thanhleviet)
-[Trestan Pillonel](https://gitlab.com/tpillone)
-[Varun Shamanna](https://gitlab.com/varunshamanna4)
+[Adam Witney](https://gitlab.com/awitney)  
+[Alex Manuele](https://gitlab.com/alexmanuele)  
+[Inês Mendes](https://gitlab.com/cimendes)  
+[Thanh Le Viet](https://gitlab.com/thanhleviet)  
+[Trestan Pillonel](https://gitlab.com/tpillone)  
+[Varun Shamanna](https://gitlab.com/varunshamanna4)  
 
 ## Introduction
 
