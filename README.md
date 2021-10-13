@@ -9,13 +9,13 @@ Previously known as Project ![mAMRite](docs/images/mAMRite_small.png)
 
 ## Introduction
 
-This project originated from the dilema a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
+This project originated from the dilemma a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
 
 The hypothesis for the project is as follows:  
 
 * given a match in one database
 * find the matches in other databases
-* aggregate the combined desriptive information pertaining to antimicrobial resistance contained in the union of the metadata
+* aggregate the combined descriptive information pertaining to antimicrobial resistance contained in the union of the metadata
 * report this to user for them to make intelligent informed choices
 
 ## Methodology
@@ -36,17 +36,17 @@ The hypothesis for the project is as follows:
   * If a RBH does not exist, report the best match as long as thresholds for coverage and indentity are met.
     A summary of the results can be found [here](/docs/appendices.md#summary-of-non-rbh-searches)
   
-  For this purpose the [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/29035372/) search tool was used that in its most sensitive mode is 100x faster than blastp and almost as sensitive. In a [comparative manuscript](https://pubmed.ncbi.nlm.nih.gov/33099302/) demonstrated that even in the worst cases mmseqs would not miss more than 10% of the RBH produced by blastp. MMseqs2 also contains a convenient wrapper to perform the all-by-all search necessary to find RBHs.
+  For this purpose the [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/29035372/) search tool was used that in its most sensitive mode is 100x faster than blastp and almost as sensitive. In a [comparative manuscript](https://pubmed.ncbi.nlm.nih.gov/33099302/) demonstrated that even in the worst cases MMseqs2 would not miss more than 10% of the RBH produced by blastp. MMseqs2 also contains a convenient wrapper to perform the all-by-all search necessary to find RBHs.
 
-* From the outputs of the MMseqs2 searches the RBHs or best matches of each gene from one database against the other two databases can be parsed to produce a `Directed Graph`. This netowrk was constructed using the [networkx](https://networkx.org/) python package.  
+* From the outputs of the MMseqs2 searches the RBHs or best matches of each gene from one database against the other two databases can be parsed to produce a `Directed Graph`. This network was constructed using the [networkx](https://networkx.org/) python package.  
   Details of the method can be found [here](docs/appendices.md#building-a-networkx-graph)  
   In this graph
   * the nodes represent a protein from one database
     * Node attributes contain the phenotype from the JSON metadata
   * the edges link nodes and represent the matches and attributes include
-    * type either RBH or OWH (one way hit)
-    * coverage (alignment length/query length)
-    * identity (percent identity of match)  
+    * type, either RBH or OWH (one way hit)
+    * coverage, (alignment length/query length)
+    * identity, (percent identity of match)  
   See the image below for a pictoral example using made up data  
 
 
@@ -56,7 +56,7 @@ The hypothesis for the project is as follows:
 
 ## Assessing the graph
 
-In order to look at the 19132 matches within the database and assess the affetciveness of the methodology the database names for matches were compared with the [Normalized Levensthein algorithm](https://devopedia.org/levenshtein-distance#qst-ans-3).
+In order to look at the 19132 matches within the database and assess the effectiveness of the methodology the database names for matches were compared with the [Normalized Levensthein algorithm](https://devopedia.org/levenshtein-distance#qst-ans-3).
 Before calculating the name similarity between the source and target of a match the name was cleaned using the following steps
 
 1. Removing species names from database names (exclusively in the CARD database) e.g `Staphylococcus aureus mupB conferring resistance to mupirocin`
@@ -87,9 +87,9 @@ linear_fit = np.polyfit(
 np.polyval(linear_fit, 0.95)
 0.6898250936869554
 ```
-To examine data for matches where the sequence identity is > than 0.95 **BUT** the name similarity is less than the predicted 0.69 was created and explored, a [CSV file](scripts/low_name_similarity.csv) was created.
+To examine data matches where the sequence identity is > 0.95 **BUT** the name similarity is less than the predicted 0.69 was created and explored, a [CSV file](scripts/low_name_similarity.csv) was created.
 
-In this data, many of the differences in the name are due to matches with the same gene family but different alleles e.g `blaADC-125` in the `ncbi` database and `blaADC-25` in the `resfinder 4` database.  
+In this data, many of the differences in the names are due to matches with the same gene family but different alleles e.g `blaADC-125` in the `ncbi` database and `blaADC-25` in the `resfinder 4` database.  
 Therefore data calculating name smilarities ignoring alleles was created.
 
 
@@ -98,7 +98,7 @@ In the top panel the violin plots show the distribution of the name similarity d
 The lower panel of the figure contains violin plots showing the distribution of the **difference** between the **observed name similarity** and that **predicted** by a linear regression model fitting name smilarity to sequence identity. The right hand 2 plots are data where the name simialrities were calculated excluding alleles.
 ![analysis plots](scripts/name_similarity_distribution_analysis.png)
 
-The data was filtered for those matches where the sequence identity is > than 0.95 but the name similarity is less than the predicted value of 0.86 based on the linear regression model. 
+The data was filtered for those matches where the sequence identity is > 0.95 but the name similarity is less than the predicted value of 0.86 based on the linear regression model. 
 
 To examine these anomalous results a [CSV sheet](scripts/low_name_similarity_without_alleles.csv) was created.  
 
@@ -109,7 +109,7 @@ Exploring this data some of these are clearly related genes but the databases ha
 _**N.B** The species names are removed in the name cleaning function._  
 
 In other cases the names are completely different, e.g  
-`gimA` in `card` and `mgt`  in `ncbi` but the sequences are 99.5% identical. `gimA` is a macrolide glycosyltransferase and may confer resistance to spiramycin. `mgt` in the `ncbi` database stands for `macrolide-inactivating glycosyltransferase`. Clearly the genes are likley to have the same function but have been assigned different names in the two databases.
+`gimA` in `card` and `mgt`  in `ncbi` but the sequences are 99.5% identical. `gimA` is a macrolide glycosyltransferase and may confer resistance to spiramycin. `mgt` in the `ncbi` database stands for `macrolide-inactivating glycosyltransferase`. Clearly the genes are likely to have the same function but have been assigned different names in the two databases.
 
 ## Querying the graph
 
@@ -162,7 +162,7 @@ This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches a
 
 ### 3. Use hAMRonization summary output
 
-Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from an antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
+Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
 Use `-j` to specify the json summary file and `-o` the path for the TSV output  
 **Please Note**  
 Only outputs using data derived from AMR detection tools that have searched either the `CARD`, `NCBI` or `Resfinder 4` databases can be used.
