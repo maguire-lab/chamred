@@ -26,7 +26,6 @@ def get_rbh_data(sourceDB,targetDB):
 
 
 def add_rbh_hits_to_graph(sourceDB,targetDB,rbh_data,graph,debug=False):
-
     sourceDB_metadata,targetDB_metadata = __load_metadata(sourceDB,targetDB)
     for _, row in rbh_data.iterrows():
         source_node_attributes = sourceDB_metadata[row['query']]
