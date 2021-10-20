@@ -27,7 +27,7 @@ def expected_print_node_info_output():
                 :link: [white]coverage:[/white] [grey66]1.0[/grey66]
                 :link: [white]identity:[/white] [grey66]1.0[/grey66]
                 :link: [white]type:[/white] [grey66]RBH[/grey66]
-                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to Ciprofloxacin [/grey66]
+                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to Ciprofloxacin[/grey66]
         ================================================================================
 
         """
