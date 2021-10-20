@@ -6,7 +6,7 @@ def read(fname):
 
 setuptools.setup(
     name='chAMReDb',
-    version='0.1',
+    version='0.2',
     description='Package to find the equivalent antibiotic resistance genes (ARGs) in other databases based on ARG(s) from one AMR determinant database',
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
@@ -24,7 +24,7 @@ setuptools.setup(
     setup_requires=['pytest-runner'],
     tests_require=['pytest', 'coverage'],
     classifiers=[ 
-        'Development Status :: 3 - Alpha', 
+        'Development Status :: 4 - Beta', 
         'Intended Audience :: Science/Research', 
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3'

@@ -8,3 +8,6 @@ dist
 build
 *.egg-info
 .eggs
+.python-version
+poetry.lock
+pyproject.toml
