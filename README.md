@@ -130,12 +130,19 @@ This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the 
 
 ## Contributors
 [Finlay Maguire](https://github.com/fmaguire)  
+
 [Anthony Underwood](https://gitlab.com/antunderwood)
+
 [Adam Witney](https://gitlab.com/awitney)  
+
 [Alex Manuele](https://gitlab.com/alexmanuele)  
+
 [Inês Mendes](https://gitlab.com/cimendes)  
+
 [Thanh Le Viet](https://gitlab.com/thanhleviet)  
+
 [Trestan Pillonel](https://gitlab.com/tpillone)  
+
 [Varun Shamanna](https://gitlab.com/varunshamanna4)  
 
 
