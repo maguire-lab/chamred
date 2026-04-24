@@ -1,17 +1,5 @@
 # ChAMReD
 
-## Contributors
-[Finlay Maguire](https://github.com/fmaguire)  
-[Anthony Underwood](https://gitlab.com/antunderwood)
-[Adam Witney](https://gitlab.com/awitney)  
-[Alex Manuele](https://gitlab.com/alexmanuele)  
-[Inês Mendes](https://gitlab.com/cimendes)  
-[Thanh Le Viet](https://gitlab.com/thanhleviet)  
-[Trestan Pillonel](https://gitlab.com/tpillone)  
-[Varun Shamanna](https://gitlab.com/varunshamanna4)  
-
-## Overview 
-
 This project originated from the dilemma a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
 
 The hypothesis for the project is as follows:  
@@ -22,7 +10,7 @@ The hypothesis for the project is as follows:
 
 The tool is split into two parts - a workflow to buld the databases (chamrdb-builder) and this the chamrdb tool itself (this repo) for querying and annotating hAMRonization results.
 
-### Database Builder: chamrdb-builder 
+## Database Builder: chamrdb-builder 
 This workflow follows these steps to build the database.
 
 * Download sequences and associated metadata of ARGs from 3 databases
@@ -50,7 +38,7 @@ This workflow follows these steps to build the database.
 \
 ![network diagram](docs/images/chamred_network.png)
 
-### Installation
+## Installation
 
 You can install directly with pip.
 
@@ -59,7 +47,7 @@ git clone https://github.com/maguire-lab/chamred && cd charmed
 pip install .
 ```
 
-### Querying the graph
+## Querying the graph
 
 ```
 > charmed query --help
@@ -90,7 +78,7 @@ options:
 
 The graph can be queried in one of 3 ways  
 
-#### 1. Querying an individual
+### 1. Querying an individual
 
 Requires specifying the identifier `-i` and database `-d`  
 
@@ -116,7 +104,7 @@ chamred query -d resfinder -i "aac(3)-IIIb"
 ![aac(3)-IIIb](/docs/images/aac(3)-IIIb.png)
 In these outputs ↔ means a RBH, and ➡ a search hit
 
-#### 2. Providing a list of identifiers from a single database
+### 2. Providing a list of identifiers from a single database
 
 Requires specifying the database `-d`, the text file containing the ids `-f`, and a path for the tsv output file `-o`  
 
@@ -126,7 +114,7 @@ chamred query -d card -f card_ids.txt  -o docs/card_vs_ncbi_resfinder.tsv
 ```
 This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
 
-#### 3. Use hAMRonization summary output
+### 3. Use hAMRonization summary output
 
 Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
 Use `-j` to specify the json summary file and `-o` the path for the TSV output  
@@ -138,3 +126,16 @@ chamred query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary
 ```
 
 This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the matches and associated metadata with one row per id in the text file
+
+
+## Contributors
+[Finlay Maguire](https://github.com/fmaguire)  
+[Anthony Underwood](https://gitlab.com/antunderwood)
+[Adam Witney](https://gitlab.com/awitney)  
+[Alex Manuele](https://gitlab.com/alexmanuele)  
+[Inês Mendes](https://gitlab.com/cimendes)  
+[Thanh Le Viet](https://gitlab.com/thanhleviet)  
+[Trestan Pillonel](https://gitlab.com/tpillone)  
+[Varun Shamanna](https://gitlab.com/varunshamanna4)  
+
+
