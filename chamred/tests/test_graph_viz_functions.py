@@ -2,9 +2,9 @@ import pytest
 import os
 import textwrap
 import tempfile
-from chamredb.functions import graph_visualisation_functions
-from chamredb.functions import graph_functions
-from chamredb.functions import utility_functions
+from chamred.functions import graph_visualisation_functions
+from chamred.functions import graph_functions
+from chamred.functions import utility_functions
 
 @pytest.fixture(scope="module") 
 def expected_print_node_info_output():
@@ -34,18 +34,18 @@ def expected_print_node_info_output():
     )
 
 @pytest.fixture(scope="module") 
-def chamredb_graph():
+def chamred_graph():
     return graph_functions.read_graph()
 
 
-def test_single_node_info_text(expected_print_node_info_output, chamredb_graph):
+def test_single_node_info_text(expected_print_node_info_output, chamred_graph):
     assert expected_print_node_info_output == graph_visualisation_functions.single_node_info_text(
         'WP_012695489.1',
         'ncbi',
-        chamredb_graph
+        chamred_graph
     )
 
-def test_write_multiple_node_info_from_ids(chamredb_graph):
+def test_write_multiple_node_info_from_ids(chamred_graph):
     # get id_data from hamronization summary file
     id_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', 'card_ids.txt')
     ids= utility_functions.parse_id_file(id_file)
@@ -55,10 +55,10 @@ def test_write_multiple_node_info_from_ids(chamredb_graph):
     with open(expected_multiple_ids_output_file_path) as expected_multiple_ids_output_file:
         expected_multiple_dbs_output = expected_multiple_ids_output_file.read()
     with tempfile.NamedTemporaryFile(mode = "w") as temp_output:
-        # run chamredb over id_data
+        # run chamred over id_data
         graph_visualisation_functions.write_multiple_node_info(
             id_data,
-            chamredb_graph,
+            chamred_graph,
             temp_output.name
         )
         with open(temp_output.name) as multiple_ids_output_file:
@@ -66,7 +66,7 @@ def test_write_multiple_node_info_from_ids(chamredb_graph):
             multiple_ids_output = multiple_ids_output_file.read()
             assert expected_multiple_dbs_output == multiple_ids_output
 
-def test_write_multiple_node_info_from_hamronization(chamredb_graph):
+def test_write_multiple_node_info_from_hamronization(chamred_graph):
     # get id_data from hamronization summary file
     json_summary_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', 'multiple_dbs_summary.json')
     id_data = utility_functions.parse_hamronization_json_file(json_summary_file)
@@ -75,10 +75,10 @@ def test_write_multiple_node_info_from_hamronization(chamredb_graph):
     with open(expected_multiple_dbs_output_file_path) as expected_multiple_dbs_output_file:
         expected_multiple_dbs_output = expected_multiple_dbs_output_file.read()
     with tempfile.NamedTemporaryFile(mode = "w") as temp_output:
-        # run chamredb over id_data
+        # run chamred over id_data
         graph_visualisation_functions.write_multiple_node_info(
             id_data,
-            chamredb_graph,
+            chamred_graph,
             temp_output.name
         )
         with open(temp_output.name) as multiple_dbs_output_file:

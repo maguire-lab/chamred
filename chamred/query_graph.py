@@ -1,5 +1,5 @@
-from chamredb.functions import graph_visualisation_functions
-from chamredb.functions import graph_functions
+from chamred.functions import graph_visualisation_functions
+from chamred.functions import graph_functions
 from rich import print as rprint
 
 def query_graph_single_id(id,database,coverage_threshold,identity_threshold):

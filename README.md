@@ -1,10 +1,8 @@
-# CharmeDb
-
-![CharmeDb](docs/images/CharmeDb.png)  
-(pronounced 'charmed' `/tʃɑː(r)md/`)
+# ChAMReD
 
 ## Contributors
 [Finlay Maguire](https://github.com/fmaguire)  
+[Anthony Underwood](https://gitlab.com/antunderwood)
 [Adam Witney](https://gitlab.com/awitney)  
 [Alex Manuele](https://gitlab.com/alexmanuele)  
 [Inês Mendes](https://gitlab.com/cimendes)  
@@ -50,7 +48,7 @@ This workflow follows these steps to build the database.
 
 \
 \
-![network diagram](docs/images/chamredb_network.png)
+![network diagram](docs/images/chamred_network.png)
 
 ## Assessing the graph
 
@@ -112,7 +110,7 @@ In other cases the names are completely different, e.g
 ## Querying the graph
 
 ```
-usage: chamredb query
+usage: chamred query
   [-h]
   [-d {card,ncbi,resfinder}]
   [-ct COVERAGE_THRESHOLD] [-it IDENTITY_THRESHOLD]
@@ -127,13 +125,13 @@ The graph can be queried in one of 3 ways
 Requires specifying the identifier `-i` and database `-d`  
 
 ```
-chamredb query -d ncbi -i WP_012695489.1 
+chamred query -d ncbi -i WP_012695489.1 
 ```
 
 Alternatively the gene name can be used
 
 ```
-chamredb query -d ncbi -i qnrB2
+chamred query -d ncbi -i qnrB2
 ```
 
 The output reports the matches and metadata from the other databases  
@@ -142,7 +140,7 @@ The output reports the matches and metadata from the other databases
 Another example where the matches are one way hits not RBHs
 
 ```
-chamredb query -d resfinder -i "aac(3)-IIIb"
+chamred query -d resfinder -i "aac(3)-IIIb"
 ```
 
 ![aac(3)-IIIb](/docs/images/aac(3)-IIIb.png)
@@ -153,7 +151,7 @@ In these outputs ↔ means a RBH, and ➡ a search hit
 Requires specifying the database `-d`, the text file containing the ids `-f`, and a path for the tsv output file `-o`  
 
 ```
-chamredb query -d card -f docs/data/card_ids.txt  -o docs/data/card_ids.tsv
+chamred query -d card -f docs/data/card_ids.txt  -o docs/data/card_ids.tsv
 ```
 
 This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
@@ -166,7 +164,7 @@ Use `-j` to specify the json summary file and `-o` the path for the TSV output
 Only outputs using data derived from AMR detection tools that have searched either the `CARD`, `NCBI` or `Resfinder 4` databases can be used.
 
 ```
-chamredb query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary.tsv
+chamred query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary.tsv
 ```
 
 This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the matches and associated metadata with one row per id in the text file

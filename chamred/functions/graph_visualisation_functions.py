@@ -3,7 +3,7 @@ import json
 import os
 import itertools
 from rich.progress import track
-from chamredb.functions import graph_functions
+from chamred.functions import graph_functions
 
 def single_node_info_text(identifier, database, graph, coverage_threshold = 0.9, identity_threshold = 0.9):
     """

@@ -4,7 +4,7 @@ import json
 import networkx as nx
 from networkx.readwrite import json_graph
 import pandas as pd
-from chamredb.functions import graph_functions
+from chamred.functions import graph_functions
 
 @pytest.fixture(scope="module") 
 def expected_rbh_graph_json():

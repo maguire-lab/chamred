@@ -2,9 +2,9 @@ import argparse
 import os
 import sys
 import textwrap
-from chamredb.query_graph import query_graph_single_id, query_graph_multiple_ids
-from chamredb.functions.utility_functions import parse_id_file
-from chamredb.functions.utility_functions import parse_hamronization_json_file
+from chamred.query_graph import query_graph_single_id, query_graph_multiple_ids
+from chamred.functions.utility_functions import parse_id_file
+from chamred.functions.utility_functions import parse_hamronization_json_file
 
 def is_valid_file(parser, arg):
     """A function to check that a filepath param passed as a string exists
@@ -48,7 +48,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description=description,formatter_class=argparse.RawDescriptionHelpFormatter)
 
     subparsers = parser.add_subparsers(
-        help='The following commands are available. Type chamredb <COMMAND> -h for more help on a specific commands',
+        help='The following commands are available. Type chamred <COMMAND> -h for more help on a specific commands',
         dest='command'
     )
     

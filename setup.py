@@ -5,7 +5,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setuptools.setup(
-    name='chAMReDb',
+    name='chAMReD',
     version='0.3.1',
     description='Package to find the equivalent antibiotic resistance genes (ARGs) in other databases based on ARG(s) from one AMR determinant database',
     long_description=read("README.md"),
@@ -17,7 +17,7 @@ setuptools.setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'chamredb = chamredb.run_chamredb:main'
+            'chamred = chamred.run_chamred:main'
         ]
     },
     install_requires=['networkx', 'pronto', 'rich', 'pandas', 'seaborn', 'numpy'],

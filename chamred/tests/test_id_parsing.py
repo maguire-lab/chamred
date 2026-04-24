@@ -1,6 +1,6 @@
 import pytest
 import os
-from chamredb.functions import utility_functions
+from chamred.functions import utility_functions
 
 @pytest.fixture(scope="module") 
 def expected_harmonizarion_parsing_output():
