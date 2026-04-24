@@ -8,6 +8,7 @@ Previously known as Project ![mAMRite](docs/images/mAMRite_small.png)
 (Abandoned for obvious trademark issues and the fact that the joke may be lost on non-Brits)  
 
 ## Contributors
+[Finlay Maguire](https://github.com/fmaguire)  
 [Adam Witney](https://gitlab.com/awitney)  
 [Alex Manuele](https://gitlab.com/alexmanuele)  
 [Inês Mendes](https://gitlab.com/cimendes)  

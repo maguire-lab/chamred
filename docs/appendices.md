@@ -10,43 +10,47 @@ wget https://github.com/arpcard/aro/raw/master/src/ontology/aro.obo -O chamredb/
 #### Sequence data
 ##### Protein
 ```
-wget https://card.mcmaster.ca/latest/data -O card_db/data
-cd card_db; tar -xvf ./data protein_fasta_protein_homolog_model.fasta
+wget https://card.mcmaster.ca/latest/data -O card_update.tar.gz
+tar -xvf card_update.tar.gz protein_fasta_protein_homolog_model.fasta
+mv protein_fasta_protein_homolog_model chamredb/data/db_fastas/card.protein.fasta
 ```
 
 ##### Nucleotide
 ```
-tar -xvf data ./nucleotide_fasta_protein_homolog_model.fasta
+tar -xvf card_update.tar.gz protein_fasta_protein_homolog_model.fasta
+mv nucleotide_fasta_protein_homolog_model.fasta chamredb/data/db_fastas/card.nucl.fasta
+rm -rf card_update.tar.gz
 ```
 
 ### NCBI
 
 #### Metadata
 ```
-wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/ReferenceGeneCatalog.txt -O db_metadata/ncbi.metadata.tsv
+wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/ReferenceGeneCatalog.txt -O chamredb/data/db_metadata/ncbi.metadata.tsv
 ```
 
 #### Sequence data
 ##### Protein
 ```
-wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/AMRProt -O db_fastas/ncbi.protein.raw.fasta
+wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/AMRProt.fa -O chamredb/data/db_fastas/ncbi.protein.raw.fasta
 ```
 Nucleotide sequences
 ```
-wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/AMR_CDS -O db_fastas/ncbi.nucl.raw.fasta
+wget https://ftp.ncbi.nlm.nih.gov/pathogen/Antimicrobial_resistance/AMRFinderPlus/database/latest/AMR_CDS.fa -O chamredb/data/db_fastas/ncbi.nucl.raw.fasta
 ```
 
 ### Resfinder
 
 #### Metadata
 ```
-wget https://bitbucket.org/genomicepidemiology/resfinder_db/raw/master/phenotypes.txt -O db_metadata/resfinder.metadata.tsv
+wget https://bitbucket.org/genomicepidemiology/resfinder_db/raw/master/phenotypes.txt -O chamredb/data/db_metadata/resfinder.metadata.tsv
 ```
 
 #### Sequences
 ```
 git clone https://bitbucket.org/genomicepidemiology/resfinder_db
-cat resfinder_db/*.fsa > db_fastas/resfinder.nucl.fasta
+cat resfinder_db/*.fsa > chamredb/data/db_fastas/resfinder.nucl.fastas
+rm -rf resfinder_db
 ```
 
 ## Data Parsing
