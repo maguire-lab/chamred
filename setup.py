@@ -6,12 +6,12 @@ def read(fname):
 
 setuptools.setup(
     name='chAMReDb',
-    version='0.2.1',
+    version='0.3.1',
     description='Package to find the equivalent antibiotic resistance genes (ARGs) in other databases based on ARG(s) from one AMR determinant database',
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
-    author='Anthony Underwood',
-    author_email='anthony.underwood@cgps.group',
+    author='Anthony Underwood/Finlay Magure',
+    author_email='finlay.magure@dal.ca',
     license='MIT',
     packages=setuptools.find_packages(),
     include_package_data=True,
