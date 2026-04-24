@@ -69,7 +69,7 @@ def parse_arguments():
 
 def print_ascii_header():
     header = textwrap.dedent(
-    """
+    r"""
     ====================================================
           _              __  __ _____      _____  _     
          | |       /\   |  \/  |  __ \    |  __ \| |    

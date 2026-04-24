@@ -151,9 +151,9 @@ In these outputs ↔ means a RBH, and ➡ a search hit
 Requires specifying the database `-d`, the text file containing the ids `-f`, and a path for the tsv output file `-o`  
 
 ```
-chamred query -d card -f docs/data/card_ids.txt  -o docs/data/card_ids.tsv
+grep "^>" chamred/data/db_fastas/card.protein.fasta  | sed 's/>//' > card_ids.txt
+chamred query -d card -f card_ids.txt  -o docs/card_vs_ncbi_resfinder.tsv
 ```
-
 This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
 
 ### 3. Use hAMRonization summary output
