@@ -50,77 +50,47 @@ This workflow follows these steps to build the database.
 \
 ![network diagram](docs/images/chamred_network.png)
 
-## Assessing the graph
+### Installation
 
-In order to look at the 19132 matches within the database and assess the effectiveness of the methodology the database names for matches were compared with the [Normalized Levensthein algorithm](https://devopedia.org/levenshtein-distance#qst-ans-3).
-Before calculating the name similarity between the source and target of a match the name was cleaned using the following steps
-
-1. Removing species names from database names (exclusively in the CARD database) e.g `Staphylococcus aureus mupB conferring resistance to mupirocin`
-2. Coversion to lower case
-3. Removing the bla prefix
-4. Removing parentheses
-5. Removing hyphens
-
-_N.B blaPAO-N and blaPDC matches are the source of 562 low name similarities so were skipped_
-
-The resulting data is plotted below showing
-A: distribution of levenshtein smilarities between the database names of the best matches
-B: distribution sequence identities for the best matches
-C: plot of the levenshtein smilarity versus the sequence identity for each match  
-
-![analysis plots](scripts/seq_id_and_name_sim_analysis.png)  
-
-The red line shows the correlation including 95% confidence intervals.
-
-Based on this regression the expected name similarity for a sequence identity of 0.95 can be calculated (0.69)
+You can install directly with pip.
 
 ```
-linear_fit = np.polyfit(
-    distance_dataframe['sequence_identity'],
-    distance_dataframe['name_similarity'],
-    1
-)
-np.polyval(linear_fit, 0.95)
-0.6898250936869554
+git clone https://github.com/maguire-lab/chamred && cd charmed
+pip install .
 ```
-To examine data matches where the sequence identity is > 0.95 **BUT** the name similarity is less than the predicted 0.69 was created and explored, a [CSV file](scripts/low_name_similarity.csv) was created.
 
-In this data, many of the differences in the names are due to matches with the same gene family but different alleles e.g `blaADC-125` in the `ncbi` database and `blaADC-25` in the `resfinder 4` database.  
-Therefore data calculating name smilarities ignoring alleles was created.
-
-
-A second series of plots explores this data by plotting the distributions of the name smilarities.
-In the top panel the violin plots show the distribution of the name similarity differences for those matches where the sequence identity is greater than 0.95. In A: this name similarities are based on complete cleaned locus names and in B: they are based on names where the alleles are ignored. 
-The lower panel of the figure contains violin plots showing the distribution of the **difference** between the **observed name similarity** and that **predicted** by a linear regression model fitting name smilarity to sequence identity. The right hand 2 plots are data where the name simialrities were calculated excluding alleles.
-![analysis plots](scripts/name_similarity_distribution_analysis.png)
-
-The data was filtered for those matches where the sequence identity is > 0.95 but the name similarity is less than the predicted value of 0.86 based on the linear regression model. 
-
-To examine these anomalous results a [CSV sheet](scripts/low_name_similarity_without_alleles.csv) was created.  
-
-Exploring this data some of these are clearly related genes but the databases have different nomneclature e.g  
-`vanA` in `card` and `VanHAX` in `resfinder 4.0` or  
-`catA15` in `ncbi` or `Clostridium butyricum catB` in `card`
-
-_**N.B** The species names are removed in the name cleaning function._  
-
-In other cases the names are completely different, e.g  
-`gimA` in `card` and `mgt`  in `ncbi` but the sequences are 99.5% identical. `gimA` is a macrolide glycosyltransferase and may confer resistance to spiramycin. `mgt` in the `ncbi` database stands for `macrolide-inactivating glycosyltransferase`. Clearly the genes are likely to have the same function but have been assigned different names in the two databases.
-
-## Querying the graph
+### Querying the graph
 
 ```
-usage: chamred query
-  [-h]
-  [-d {card,ncbi,resfinder}]
-  [-ct COVERAGE_THRESHOLD] [-it IDENTITY_THRESHOLD]
-  (-i ID | -f ID_FILE | -j HAMRONIZATION_JSON_FILE)
-  [-o OUTFILE_PATH]
+> charmed query --help
+
+usage: chamred query [-h] [-d {card,ncbi,resfinder}] [-ct COVERAGE_THRESHOLD]
+                     [-it IDENTITY_THRESHOLD] (-i ID | -f ID_FILE |
+                     -j HAMRONIZATION_JSON_FILE) [-o OUTFILE_PATH]
+
+options:
+  -h, --help            show this help message and exit
+  -d, --database {card,ncbi,resfinder}
+                        which database are the gene(s) in
+  -ct, --coverage_threshold COVERAGE_THRESHOLD
+                        coverage threshold below which a match will not be
+                        reported
+  -it, --identity_threshold IDENTITY_THRESHOLD
+                        identity threshold below which a match will not be
+                        reported
+  -i, --id ID           The id of a ARG in the specified database
+  -f, --id_file ID_FILE
+                        Path to a file containing ids of ARGs in the specified
+                        database
+  -j, --hamronization_json_file HAMRONIZATION_JSON_FILE
+                        Path to a hamronization summaty in JSON format
+  -o, --outfile_path OUTFILE_PATH
+                        Path to file where query results will be written
 ```
 
 The graph can be queried in one of 3 ways  
 
-### 1. Querying an individual
+#### 1. Querying an individual
 
 Requires specifying the identifier `-i` and database `-d`  
 
@@ -146,7 +116,7 @@ chamred query -d resfinder -i "aac(3)-IIIb"
 ![aac(3)-IIIb](/docs/images/aac(3)-IIIb.png)
 In these outputs ↔ means a RBH, and ➡ a search hit
 
-### 2. Providing a list of identifiers from a single database
+#### 2. Providing a list of identifiers from a single database
 
 Requires specifying the database `-d`, the text file containing the ids `-f`, and a path for the tsv output file `-o`  
 
@@ -156,7 +126,7 @@ chamred query -d card -f card_ids.txt  -o docs/card_vs_ncbi_resfinder.tsv
 ```
 This will produce a [TSV file](/docs/data/card_ids.tsv) containing the matches and associated metadata with one row per id in the text file
 
-### 3. Use hAMRonization summary output
+#### 3. Use hAMRonization summary output
 
 Use the [hAMRonization softare](https://github.com/pha4ge/hAMRonization) to convert the outputs from antimicrobial resistance gene detection tools into a unified format. Concatenate and summarize AMR detection reports into a single summary JSON file using the `hamronize summarize` command from this package. The JSON output from this step can be used to query ChamreDb.  
 Use `-j` to specify the json summary file and `-o` the path for the TSV output  
