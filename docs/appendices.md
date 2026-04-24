@@ -12,13 +12,13 @@ wget https://github.com/arpcard/aro/raw/master/src/ontology/aro.obo -O chamredb/
 ```
 wget https://card.mcmaster.ca/latest/data -O card_update.tar.gz
 tar -xvf card_update.tar.gz protein_fasta_protein_homolog_model.fasta
-mv protein_fasta_protein_homolog_model chamredb/data/db_fastas/card.protein.fasta
+mv protein_fasta_protein_homolog_model chamredb/data/db_fastas/
 ```
 
 ##### Nucleotide
 ```
 tar -xvf card_update.tar.gz protein_fasta_protein_homolog_model.fasta
-mv nucleotide_fasta_protein_homolog_model.fasta chamredb/data/db_fastas/card.nucl.fasta
+mv nucleotide_fasta_protein_homolog_model.fasta chamredb/data/db_fastas/
 rm -rf card_update.tar.gz
 ```
 
