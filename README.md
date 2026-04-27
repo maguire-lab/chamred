@@ -10,6 +10,11 @@ The hypothesis for the project is as follows:
 * Aggregate the combined descriptive information pertaining to antimicrobial resistance contained in the union of the metadata
 * Report this to user for them to make intelligent informed choices
 
+\
+\
+![network diagram](docs/images/chamred_network.png)
+
+
 The tool is split into two parts - a workflow to buld the databases (chamrdb-builder) and this the chamrdb tool itself (this repo) for querying and annotating hAMRonization results.
 
 Current integrated database versions:
@@ -109,28 +114,9 @@ chamred query -j docs/data/hamronize_summary.json -o docs/data/hamronize_summary
 This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the matches and associated metadata with one row per id in the text file
 
 
-## Contributors
-[Finlay Maguire](https://github.com/fmaguire)  
 
-[Anthony Underwood](https://gitlab.com/antunderwood)
-
-[Adam Witney](https://gitlab.com/awitney)  
-
-[Alex Manuele](https://gitlab.com/alexmanuele)  
-
-[Inês Mendes](https://gitlab.com/cimendes)  
-
-[Thanh Le Viet](https://gitlab.com/thanhleviet)  
-
-[Trestan Pillonel](https://gitlab.com/tpillone)  
-
-[Varun Shamanna](https://gitlab.com/varunshamanna4)  
-
-
-
-
-### Database Builder: chamrdb-builder 
-This workflow follows these steps to build the database.
+## Database Builder: chamrdb-builder 
+This workflow can be found [here](https://github.com/maguire-lab/chamredb-builder) and follows these steps to build the database.
 
 * Download sequences and associated metadata of ARGs from 3 databases
   * [CARD](https://card.mcmaster.ca/) ([Manuscript](http://www.ncbi.nlm.nih.gov/pubmed/31665441))
@@ -153,8 +139,24 @@ This workflow follows these steps to build the database.
     * identity, (percent identity of match)  
   See the image below for a pictoral example using made up data  
 
-\
-\
-![network diagram](docs/images/chamred_network.png)
+
+
+## Contributors
+[Finlay Maguire](https://github.com/fmaguire)  
+
+[Anthony Underwood](https://gitlab.com/antunderwood)
+
+[Adam Witney](https://gitlab.com/awitney)  
+
+[Alex Manuele](https://gitlab.com/alexmanuele)  
+
+[Inês Mendes](https://gitlab.com/cimendes)  
+
+[Thanh Le Viet](https://gitlab.com/thanhleviet)  
+
+[Trestan Pillonel](https://gitlab.com/tpillone)  
+
+[Varun Shamanna](https://gitlab.com/varunshamanna4)  
+
 
 
