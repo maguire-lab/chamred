@@ -137,8 +137,16 @@ This workflow can be found [here](https://github.com/maguire-lab/chamredb-builde
     * type, either RBH or OWH (one way hit)
     * coverage, (alignment length/query length)
     * identity, (percent identity of match)  
-  See the image below for a pictoral example using made up data  
+\
+\
+![Name similarities distributions](docs/images/name_similarity_distribution_analysis.png)
 
+\
+\
+![Sequence ID vs name similarities](docs/images/seq_id_and_name_sim_analysis.png)
+
+
+Analyses can be repeated [here](https://github.com/maguire-lab/chamredb-builder/tree/main/evaluation).
 
 
 ## Contributors
