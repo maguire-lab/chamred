@@ -6,10 +6,10 @@ from chamred.functions import graph_visualisation_functions
 from chamred.functions import graph_functions
 from chamred.functions import utility_functions
 
-@pytest.fixture(scope="module") 
+
+@pytest.fixture(scope="module")
 def expected_print_node_info_output():
-    return textwrap.dedent(
-        """
+    return textwrap.dedent("""
         :dna: [cyan bold]WP_012695489.1[/cyan bold] [magenta bold](qnrB2)[/magenta bold]
         [bright_cyan]:page_facing_up: phenotype: confers resistance to subclass QUINOLONE[/bright_cyan]
         [bright_cyan]:page_facing_up: product: quinolone resistance pentapeptide repeat protein QnrB2[/bright_cyan]
@@ -30,36 +30,44 @@ def expected_print_node_info_output():
                 :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to Ciprofloxacin[/grey66]
         ================================================================================
 
-        """
-    )
+        """)
 
-@pytest.fixture(scope="module") 
+
+@pytest.fixture(scope="module")
 def chamred_graph():
     return graph_functions.read_graph()
 
 
 def test_single_node_info_text(expected_print_node_info_output, chamred_graph):
-    assert expected_print_node_info_output == graph_visualisation_functions.single_node_info_text(
-        'WP_012695489.1',
-        'ncbi',
-        chamred_graph
+    assert (
+        expected_print_node_info_output
+        == graph_visualisation_functions.single_node_info_text(
+            "WP_012695489.1", "ncbi", chamred_graph
+        )
     )
 
-def write_multiple_node_info_from_ids(chamred_graph, database, database_ids, expected_output):
+
+def write_multiple_node_info_from_ids(
+    chamred_graph, database, database_ids, expected_output
+):
     # get id_data from hamronization summary file
-    id_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', database_ids)
-    ids= utility_functions.parse_id_file(id_file)
-    id_data = [{'id': id, 'database': database} for id in ids]
+    id_file = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "test_data", database_ids
+    )
+    ids = utility_functions.parse_id_file(id_file)
+    id_data = [{"id": id, "database": database} for id in ids]
     # get expected output filepath
-    expected_multiple_ids_output_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', expected_output)
-    with open(expected_multiple_ids_output_file_path) as expected_multiple_ids_output_file:
+    expected_multiple_ids_output_file_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "test_data", expected_output
+    )
+    with open(
+        expected_multiple_ids_output_file_path
+    ) as expected_multiple_ids_output_file:
         expected_multiple_dbs_output = expected_multiple_ids_output_file.read()
-    with tempfile.NamedTemporaryFile(mode = "w") as temp_output:
+    with tempfile.NamedTemporaryFile(mode="w") as temp_output:
         # run chamred over id_data
         graph_visualisation_functions.write_multiple_node_info(
-            id_data,
-            chamred_graph,
-            temp_output.name
+            id_data, chamred_graph, temp_output.name
         )
         with open(temp_output.name) as multiple_ids_output_file:
             print(multiple_ids_output_file)
@@ -68,29 +76,48 @@ def write_multiple_node_info_from_ids(chamred_graph, database, database_ids, exp
 
 
 def test_write_multiple_node_info_from_ids_card(chamred_graph):
-    write_multiple_node_info_from_ids(chamred_graph, 'card', 'card_ids.txt', 'expected_multiple_ids_card.tsv')
+    write_multiple_node_info_from_ids(
+        chamred_graph, "card", "card_ids.txt", "expected_multiple_ids_card.tsv"
+    )
+
 
 def test_write_multiple_node_info_from_ids_ncbi(chamred_graph):
-    write_multiple_node_info_from_ids(chamred_graph, 'ncbi', 'ncbi_ids.txt', 'expected_multiple_ids_ncbi.tsv')
+    write_multiple_node_info_from_ids(
+        chamred_graph, "ncbi", "ncbi_ids.txt", "expected_multiple_ids_ncbi.tsv"
+    )
+
 
 def test_write_multiple_node_info_from_ids_resfinder(chamred_graph):
-    write_multiple_node_info_from_ids(chamred_graph, 'resfinder', 'resfinder_ids.txt', 'expected_multiple_ids_resfinder.tsv')
+    write_multiple_node_info_from_ids(
+        chamred_graph,
+        "resfinder",
+        "resfinder_ids.txt",
+        "expected_multiple_ids_resfinder.tsv",
+    )
 
 
 def test_write_multiple_node_info_from_hamronization(chamred_graph):
     # get id_data from hamronization summary file
-    json_summary_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', 'multiple_dbs_summary.json')
+    json_summary_file = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "test_data",
+        "multiple_dbs_summary.json",
+    )
     id_data = utility_functions.parse_hamronization_json_file(json_summary_file)
     # get expected output filepath
-    expected_multiple_dbs_output_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', 'expected_multiple_dbs.info.tsv')
-    with open(expected_multiple_dbs_output_file_path) as expected_multiple_dbs_output_file:
+    expected_multiple_dbs_output_file_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "test_data",
+        "expected_multiple_dbs.info.tsv",
+    )
+    with open(
+        expected_multiple_dbs_output_file_path
+    ) as expected_multiple_dbs_output_file:
         expected_multiple_dbs_output = expected_multiple_dbs_output_file.read()
-    with tempfile.NamedTemporaryFile(mode = "w") as temp_output:
+    with tempfile.NamedTemporaryFile(mode="w") as temp_output:
         # run chamred over id_data
         graph_visualisation_functions.write_multiple_node_info(
-            id_data,
-            chamred_graph,
-            temp_output.name
+            id_data, chamred_graph, temp_output.name
         )
         with open(temp_output.name) as multiple_dbs_output_file:
             multiple_dbs_output = multiple_dbs_output_file.read()
@@ -98,6 +125,3 @@ def test_write_multiple_node_info_from_hamronization(chamred_graph):
             print("============================================================")
             print(multiple_dbs_output)
             assert expected_multiple_dbs_output == multiple_dbs_output
-
-
-

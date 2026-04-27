@@ -1,32 +1,31 @@
 import setuptools
 import os
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 setuptools.setup(
-    name='chAMReD',
-    version='0.3.1',
-    description='Package to find the equivalent antibiotic resistance genes (ARGs) in other databases based on ARG(s) from one AMR determinant database',
+    name="chAMReD",
+    version="0.4.0",
+    description="Package to find the equivalent antibiotic resistance genes (ARGs) "
+                "in other databases based on ARG(s) from one AMR determinant database",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
-    author='Anthony Underwood/Finlay Magure',
-    author_email='finlay.magure@dal.ca',
-    license='MIT',
+    author="Anthony Underwood/Finlay Magure",
+    author_email="finlay.magure@dal.ca",
+    license="MIT",
     packages=setuptools.find_packages(),
     include_package_data=True,
-    entry_points={
-        'console_scripts': [
-            'chamred = chamred.run_chamred:main'
-        ]
-    },
-    install_requires=['networkx', 'pronto', 'rich', 'pandas', 'seaborn', 'numpy'],
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'coverage'],
-    classifiers=[ 
-        'Development Status :: 4 - Beta', 
-        'Intended Audience :: Science/Research', 
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3'
-    ]
+    entry_points={"console_scripts": ["chamred = chamred.run_chamred:main"]},
+    install_requires=["networkx", "pronto", "rich", "pandas", "seaborn", "numpy"],
+    setup_requires=["pytest-runner"],
+    tests_require=["pytest", "coverage"],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+    ],
 )
