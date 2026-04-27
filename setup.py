@@ -10,7 +10,7 @@ setuptools.setup(
     name="chAMReD",
     version=re.search('^__version__\\s*=\\s*"(.*)"', 
                       read('chamred/__init__.py'), 
-                      re.M).group(1)
+                      re.M).group(1),
     description="Package to find the equivalent antibiotic resistance genes (ARGs) "
                 "in other databases based on ARG(s) from one AMR determinant database",
     long_description=read("README.md"),
