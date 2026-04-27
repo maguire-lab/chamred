@@ -10,6 +10,14 @@ The hypothesis for the project is as follows:
 
 The tool is split into two parts - a workflow to buld the databases (chamrdb-builder) and this the chamrdb tool itself (this repo) for querying and annotating hAMRonization results.
 
+Current integrated database versions:
+
+- NCBI 4.2 (2026-03-24.1)
+
+- ResFinder 2026-03-11 & PointFinder 2026-03-11
+
+- CARD 4.0.1 (2025-05-29)
+
 ## Database Builder: chamrdb-builder 
 This workflow follows these steps to build the database.
 
