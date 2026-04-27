@@ -1,6 +1,6 @@
 import setuptools
 import os
-
+import re
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -8,7 +8,9 @@ def read(fname):
 
 setuptools.setup(
     name="chAMReD",
-    version="0.4.0",
+    version=re.search('^__version__\\s*=\\s*"(.*)"', 
+                      read('chamred/__init__.py'), 
+                      re.M).group(1)
     description="Package to find the equivalent antibiotic resistance genes (ARGs) "
                 "in other databases based on ARG(s) from one AMR determinant database",
     long_description=read("README.md"),
@@ -19,7 +21,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     entry_points={"console_scripts": ["chamred = chamred.run_chamred:main"]},
-    install_requires=["networkx", "pronto", "rich", "pandas", "seaborn", "numpy"],
+    install_requires=["networkx", "rich"],
     setup_requires=["pytest-runner"],
     tests_require=["pytest", "coverage"],
     classifiers=[

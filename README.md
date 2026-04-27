@@ -1,5 +1,7 @@
 # ChAMReD
 
+[![PyPI version](https://badge.fury.io/py/chamred.svg)](https://badge.fury.io/py/chamred)
+
 This project originated from the dilemma a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
 
 The hypothesis for the project is as follows:  
@@ -18,41 +20,12 @@ Current integrated database versions:
 
 - CARD 4.0.1 (2025-05-29)
 
-## Database Builder: chamrdb-builder 
-This workflow follows these steps to build the database.
-
-* Download sequences and associated metadata of ARGs from 3 databases
-  * [CARD](https://card.mcmaster.ca/) ([Manuscript](http://www.ncbi.nlm.nih.gov/pubmed/31665441))
-  * [NCBI AMR Reference Gene Catalog](https://www.ncbi.nlm.nih.gov/pathogens/refgene/)
-  * [Resfinder 4](https://bitbucket.org/genomicepidemiology/resfinder/src/4.0/) ([Manuscipt](https://academic.oup.com/jac/article/75/12/3491/5890997))  
-* Parse the data to
-  * extract the protein sequences and write into fasta format with the gene identifiers as the record ids.
-  * extract the associated metadata and convert to a consistent `JSON` format  
-* Find best matches of each gene from one source database against the other two target databases using [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/29035372/)
-  * Where a reciprocal best hit (RBH) exists, report this.  
-  * If a RBH does not exist, report the best match as long as thresholds for coverage and indentity are met.
-
-* From the outputs of the MMseqs2 searches the RBHs or best matches of each gene from one database against the other two databases can be parsed to produce a `Directed Graph` using [networkx](https://networkx.org/).
-  In this graph
-  * the nodes represent a protein from one database
-    * Node attributes contain the phenotype from the JSON metadata
-  * the edges link nodes and represent the matches and attributes include
-    * type, either RBH or OWH (one way hit)
-    * coverage, (alignment length/query length)
-    * identity, (percent identity of match)  
-  See the image below for a pictoral example using made up data  
-
-\
-\
-![network diagram](docs/images/chamred_network.png)
-
 ## Installation
 
 You can install directly with pip.
 
 ```
-git clone https://github.com/maguire-lab/chamred && cd charmed
-pip install .
+pip install chamred
 ```
 
 ## Querying the graph
@@ -152,5 +125,36 @@ This will produce a [TSV file](/docs/data/hamronize_summary.tsv) containing the 
 [Trestan Pillonel](https://gitlab.com/tpillone)  
 
 [Varun Shamanna](https://gitlab.com/varunshamanna4)  
+
+
+
+
+### Database Builder: chamrdb-builder 
+This workflow follows these steps to build the database.
+
+* Download sequences and associated metadata of ARGs from 3 databases
+  * [CARD](https://card.mcmaster.ca/) ([Manuscript](http://www.ncbi.nlm.nih.gov/pubmed/31665441))
+  * [NCBI AMR Reference Gene Catalog](https://www.ncbi.nlm.nih.gov/pathogens/refgene/)
+  * [Resfinder 4](https://bitbucket.org/genomicepidemiology/resfinder/src/4.0/) ([Manuscipt](https://academic.oup.com/jac/article/75/12/3491/5890997))  
+* Parse the data to
+  * extract the protein sequences and write into fasta format with the gene identifiers as the record ids.
+  * extract the associated metadata and convert to a consistent `JSON` format  
+* Find best matches of each gene from one source database against the other two target databases using [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/29035372/)
+  * Where a reciprocal best hit (RBH) exists, report this.  
+  * If a RBH does not exist, report the best match as long as thresholds for coverage and indentity are met.
+
+* From the outputs of the MMseqs2 searches the RBHs or best matches of each gene from one database against the other two databases can be parsed to produce a `Directed Graph` using [networkx](https://networkx.org/).
+  In this graph
+  * the nodes represent a protein from one database
+    * Node attributes contain the phenotype from the JSON metadata
+  * the edges link nodes and represent the matches and attributes include
+    * type, either RBH or OWH (one way hit)
+    * coverage, (alignment length/query length)
+    * identity, (percent identity of match)  
+  See the image below for a pictoral example using made up data  
+
+\
+\
+![network diagram](docs/images/chamred_network.png)
 
 
