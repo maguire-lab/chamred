@@ -1,0 +1,5 @@
+blaACC-2
+blaCMY-1
+blaSHV-24
+blaTEM-84
+blaSHV-180

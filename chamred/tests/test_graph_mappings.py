@@ -45,13 +45,13 @@ def test_single_node_info_text(expected_print_node_info_output, chamred_graph):
         chamred_graph
     )
 
-def test_write_multiple_node_info_from_ids(chamred_graph):
+def write_multiple_node_info_from_ids(chamred_graph, database, database_ids, expected_output):
     # get id_data from hamronization summary file
-    id_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', 'card_ids.txt')
+    id_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', database_ids)
     ids= utility_functions.parse_id_file(id_file)
-    id_data = [{'id': id, 'database': 'card'} for id in ids]
+    id_data = [{'id': id, 'database': database} for id in ids]
     # get expected output filepath
-    expected_multiple_ids_output_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', 'expected_multiple_ids.info.tsv')
+    expected_multiple_ids_output_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_data', expected_output)
     with open(expected_multiple_ids_output_file_path) as expected_multiple_ids_output_file:
         expected_multiple_dbs_output = expected_multiple_ids_output_file.read()
     with tempfile.NamedTemporaryFile(mode = "w") as temp_output:
@@ -65,6 +65,17 @@ def test_write_multiple_node_info_from_ids(chamred_graph):
             print(multiple_ids_output_file)
             multiple_ids_output = multiple_ids_output_file.read()
             assert expected_multiple_dbs_output == multiple_ids_output
+
+
+def test_write_multiple_node_info_from_ids_card(chamred_graph):
+    write_multiple_node_info_from_ids(chamred_graph, 'card', 'card_ids.txt', 'expected_multiple_ids_card.tsv')
+
+def test_write_multiple_node_info_from_ids_ncbi(chamred_graph):
+    write_multiple_node_info_from_ids(chamred_graph, 'ncbi', 'ncbi_ids.txt', 'expected_multiple_ids_ncbi.tsv')
+
+def test_write_multiple_node_info_from_ids_resfinder(chamred_graph):
+    write_multiple_node_info_from_ids(chamred_graph, 'resfinder', 'resfinder_ids.txt', 'expected_multiple_ids_resfinder.tsv')
+
 
 def test_write_multiple_node_info_from_hamronization(chamred_graph):
     # get id_data from hamronization summary file
