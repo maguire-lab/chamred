@@ -11,7 +11,7 @@ from chamred.functions import utility_functions
 def expected_print_node_info_output():
     return textwrap.dedent("""
         :dna: [cyan bold]WP_012695489.1[/cyan bold] [magenta bold](qnrB2)[/magenta bold]
-        [bright_cyan]:page_facing_up: phenotype: confers resistance to subclass QUINOLONE[/bright_cyan]
+        [bright_cyan]:page_facing_up: phenotype: confers resistance to subclass: QUINOLONE[/bright_cyan]
         [bright_cyan]:page_facing_up: product: quinolone resistance pentapeptide repeat protein QnrB2[/bright_cyan]
           :file_cabinet: [chartreuse1]card[/chartreuse1]
             :left_right_arrow: [chartreuse1]ARO3002735 (QnrB20)[/chartreuse1]
@@ -19,15 +19,15 @@ def expected_print_node_info_output():
                 :link: [white]identity:[/white] [grey66]0.995[/grey66]
                 :link: [white]type:[/white] [grey66]RBH[/grey66]
                 :page_facing_up: [white]PMID:[/white] [grey66]['18993034'][/grey66]
-                :page_facing_up: [white]additional_phenotype:[/white] [grey66]confers resistance to drug class: fluoroquinolone antibiotic[/grey66]
+                :page_facing_up: [white]additional_phenotype:[/white] [grey66]confers resistance to drug class: FLUOROQUINOLONE ANTIBIOTIC[/grey66]
                 :page_facing_up: [white]is_a:[/white] [grey66]ARO:3000419:quinolone resistance protein (qnr)[/grey66]
-                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to antibiotic: ciprofloxacin,gatifloxacin,levofloxacin,moxifloxacin,nalidixic acid,norfloxacin,sparfloxacin[/grey66]
+                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to antibiotic: CIPROFLOXACIN,  GATIFLOXACIN,  LEVOFLOXACIN,  MOXIFLOXACIN,  NALIDIXIC ACID,  NORFLOXACIN,  SPARFLOXACIN[/grey66]
           :file_cabinet: [orange_red1]resfinder[/orange_red1]
             :left_right_arrow: [orange_red1]qnrB2 (qnrB2)[/orange_red1]
                 :link: [white]coverage:[/white] [grey66]1.0[/grey66]
                 :link: [white]identity:[/white] [grey66]1.0[/grey66]
                 :link: [white]type:[/white] [grey66]RBH[/grey66]
-                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to Ciprofloxacin[/grey66]
+                :page_facing_up: [white]phenotype:[/white] [grey66]confers resistance to: CIPROFLOXACIN[/grey66]
         ================================================================================
 
         """)
