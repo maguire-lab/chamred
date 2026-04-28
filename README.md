@@ -1,7 +1,5 @@
 # ChAMReD
 
-[![PyPI version](https://badge.fury.io/py/chamred.svg)](https://badge.fury.io/py/chamred)
-
 This project originated from the dilemma a scientist faces when choosing a database that stores antimicrobial resistance determinants. Multiple databases exist with comparative strengths and weaknesses. This project builds on the concepts of the [haAMRonization](https://github.com/pha4ge/hAMRonization) project aiming to aggeregate and combine the information contained within the metadata associated with each project. The problem is exacerbated by the fact that the equivalent antimicrobial resistance genes (ARGs) can be named differently in each database.
 
 The hypothesis for the project is as follows:  
